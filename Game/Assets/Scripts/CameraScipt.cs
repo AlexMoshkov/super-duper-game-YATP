@@ -8,7 +8,7 @@ public class CameraScipt : MonoBehaviour
     private GameObject player;
     void Start()
     {
-        player = GameObject.Find("character");
+        player = GameObject.Find("player");
     }
 
     // Update is called once per frame

@@ -1,52 +1,31 @@
 ﻿using System;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Tilemaps;
 
-public class character : MonoBehaviour
+public class Character
 {
-    private float acceleration = 2f;
-    public Rigidbody2D rigidBodyComponent;
-    private Animator animator;
-    private SpriteRenderer sprite;
+    public Vector3 position;
+
+    public Character(Vector3 position)
+    {
+        this.position = position;
+    }
+
+    public Vector2 GetPositionInTilemap(Tilemap tilemap)
+    {
+        var x = position.x;
+        var y = position.y;
+        var positionInTilemap = tilemap.GetCellCenterLocal(new Vector3Int((int) Math.Floor(x), (int) Math.Floor(y), 0));
+        positionInTilemap.x -= -10;
+        positionInTilemap.y -= -2;
+        positionInTilemap.x = (int)Math.Floor(positionInTilemap.x);
+        positionInTilemap.y = (int)Math.Floor(positionInTilemap.y);
+        return new Vector2(positionInTilemap.x, positionInTilemap.y);
+    }
+
+    public void UpdatePosition(Vector3 pos)
+    {
+        position = pos;
+    }
     
-
-    void Start()
-    {
-        rigidBodyComponent = GetComponent<Rigidbody2D>();
-        animator = GetComponent<Animator>();
-        sprite = GetComponent<SpriteRenderer>();
-    }
-    
-    void Update()
-    {
-        animator.SetBool("IsRun", false);
-        if (Input.GetButton("Vertical") || Input.GetButton("Horizontal"))
-            Run();
-    }
-
-    private void Run1()
-    {
-        var direction = Vector3.right * Input.GetAxis("Horizontal") + Vector3.up * Input.GetAxis("Vertical");
-        transform.position = Vector3.MoveTowards(transform.position, transform.position + direction,
-            acceleration * Time.deltaTime);
-    }
-
-    private void Run()
-    {
-        var w = Input.GetKey(KeyCode.W) ? 1 : 0;
-        var a = Input.GetKey(KeyCode.A) ? -1 : 0;
-        var s = Input.GetKey(KeyCode.S) ? -1 : 0;
-        var d = Input.GetKey(KeyCode.D) ? 1 : 0;
-        var moveVector = new Vector3(a + d, w + s, 0);
-        var direction = new Vector3(Input.GetAxis("Horizontal"), Input.GetAxis("Vertical"), 0);
-        sprite.flipX = moveVector.x < 0;
-        animator.SetBool("IsRun", true);
-        transform.position += moveVector * acceleration * Time.deltaTime;
-    }
-
-    private void Jump()
-    {
-        
-    }
 }
