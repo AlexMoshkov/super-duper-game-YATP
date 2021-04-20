@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class player : MonoBehaviour
+public class Player : MonoBehaviour
 {
     private float acceleration = 2f;
     public Rigidbody2D rigidBodyComponent;
@@ -31,7 +31,6 @@ public class player : MonoBehaviour
         var s = Input.GetKey(KeyCode.S) ? -1 : 0;
         var d = Input.GetKey(KeyCode.D) ? 1 : 0;
         var moveVector = new Vector3(a + d, w + s, 0);
-        //var direction = new Vector3(Input.GetAxis("Horizontal"), Input.GetAxis("Vertical"), 0);
         sprite.flipX = moveVector.x < 0;
         animator.SetBool("IsRun", true);
         transform.position += moveVector * acceleration * Time.deltaTime;

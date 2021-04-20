@@ -16,8 +16,7 @@ public class Character
         var x = position.x;
         var y = position.y;
         var positionInTilemap = tilemap.GetCellCenterLocal(new Vector3Int((int) Math.Floor(x), (int) Math.Floor(y), 0));
-        positionInTilemap.x -= -10;
-        positionInTilemap.y -= -2;
+        positionInTilemap -= new Vector3(-10,-2,0);
         positionInTilemap.x = (int)Math.Floor(positionInTilemap.x);
         positionInTilemap.y = (int)Math.Floor(positionInTilemap.y);
         return new Vector2(positionInTilemap.x, positionInTilemap.y);
