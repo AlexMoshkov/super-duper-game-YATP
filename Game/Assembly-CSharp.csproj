@@ -59,7 +59,12 @@
   </ItemGroup>
   <ItemGroup>
      <Compile Include="Assets\Scripts\CameraScipt.cs" />
-     <Compile Include="Assets\Scripts\character.cs" />
+     <Compile Include="Assets\Scripts\CellType.cs" />
+     <Compile Include="Assets\Scripts\Character.cs" />
+     <Compile Include="Assets\Scripts\Map.cs" />
+     <Compile Include="Assets\Scripts\MonsterController.cs" />
+     <Compile Include="Assets\Scripts\TilemapScript.cs" />
+     <Compile Include="Assets\Scripts\player.cs" />
  <Reference Include="Unity.Timeline.Editor">
  <HintPath>C:/Project&apos;s/super-duper-game-YATP/Game/Library/ScriptAssemblies/Unity.Timeline.Editor.dll</HintPath>
  </Reference>
