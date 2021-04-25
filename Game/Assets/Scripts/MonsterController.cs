@@ -9,26 +9,22 @@ public class MonsterController : MonoBehaviour
     public Tilemap tilemap;
     private Map map;
     private float acceleration = 1.5f;
-    public Character monster;
+
     private SpriteRenderer sprite;
 
     void Start()
     {
         map = tilemap.GetComponent<TilemapScript>().map;
-        monster = new Character(transform.position);
         sprite = GetComponent<SpriteRenderer>();
     }
 
-    private void Update()
+    private void FixedUpdate()
     {
-        var nextPos = FindPath(monster.GetPositionInTilemap(tilemap), map.playerPosition);
-        nextPos += new Vector2(-10, -2);
-        nextPos.x += 0.5f;
-        nextPos.y += 0.5f;
-        nextPos =  new Vector3(nextPos.x, nextPos.y, 0) - monster.position;
+        Vector3 nextPos = FindPath(gameObject.GetPositionInTilemap(tilemap), map.playerPosition);
+        nextPos = gameObject.GetWordPositionFromTilemap(tilemap, nextPos);
+        nextPos -= transform.position;
         transform.position += new Vector3(nextPos.x, nextPos.y, 0).normalized * acceleration * Time.deltaTime;
         sprite.flipX = nextPos.x < 0;
-        monster.UpdatePosition(transform.position);
     }
 
     private Vector2 FindPath(Vector2 start, Vector2 end)
@@ -61,6 +57,9 @@ public class MonsterController : MonoBehaviour
 
             if (track.ContainsKey(end)) break;
         }
+
+        if (!track.ContainsKey(end))
+            return start;
         
         var partItem = end;
         var result = new List<Vector2>();
