@@ -14,16 +14,14 @@ public class TilemapScript : MonoBehaviour
     private void Awake()
     {
         tilemap = GetComponent<Tilemap>();
-        player = GameObject.Find("player");
+        player = GameObject.Find("Player");
         var Cellmap = GetMap();
-        //Debug.Log(tilemap.cellBounds);
         map = new Map(Cellmap, GetPlayerPosition());
     }
 
     private void Update()
     {
         map.playerPosition = GetPlayerPosition();
-       // Debug.Log(map.playerPosition);
     }
 
     private CellType[,] GetMap()

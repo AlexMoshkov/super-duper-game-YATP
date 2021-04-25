@@ -10,33 +10,27 @@ public class MonsterController : MonoBehaviour
     private Map map;
     private float acceleration = 1.5f;
 
-    public Character monster;
-    public Character player;
+    private SpriteRenderer sprite;
 
     void Start()
     {
         map = tilemap.GetComponent<TilemapScript>().map;
-        monster = new Character(transform.position);
+        sprite = GetComponent<SpriteRenderer>();
     }
 
-    private void Update()
+    private void FixedUpdate()
     {
-        monster.UpdatePosition(transform.position);
-        
-        var nextDir = FindPath(monster.GetPositionInTilemap(tilemap), map.playerPosition);
-        Debug.Log(nextDir);
-        nextDir += new Vector2(-10, -2);
-        nextDir.x += 0.5f;
-        nextDir.y += 0.5f;
-
-        nextDir =  new Vector3(nextDir.x, nextDir.y, 0) - monster.position;
-        transform.position += new Vector3(nextDir.x, nextDir.y, 0) * acceleration * Time.deltaTime;
+        Vector3 nextPos = FindPath(gameObject.GetPositionInTilemap(tilemap), map.playerPosition);
+        nextPos = gameObject.GetWordPositionFromTilemap(tilemap, nextPos);
+        nextPos -= transform.position;
+        transform.position += new Vector3(nextPos.x, nextPos.y, 0).normalized * acceleration * Time.deltaTime;
+        sprite.flipX = nextPos.x < 0;
     }
 
     private Vector2 FindPath(Vector2 start, Vector2 end)
     {
         var track = new Dictionary<Vector2, Vector2>();
-        track[start] = new Vector2(9999, 9999);
+        track[start] = new Vector2(999999, 999999);
         var queue = new Queue<Vector2>();
         var visited = new HashSet<Vector2>();
         visited.Add(start);
@@ -63,11 +57,14 @@ public class MonsterController : MonoBehaviour
 
             if (track.ContainsKey(end)) break;
         }
+
+        if (!track.ContainsKey(end))
+            return start;
         
         var partItem = end;
         var result = new List<Vector2>();
         
-        while (partItem != new Vector2(9999, 9999))
+        while (partItem != new Vector2(999999, 999999))
         {
             result.Add(partItem);
             partItem = track[partItem];
