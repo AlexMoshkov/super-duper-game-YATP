@@ -17,15 +17,13 @@ public class MonsterController : MonoBehaviour
     {
         map = tilemap.GetComponent<TilemapScript>().map;
         monster = new Character(transform.position);
-        player = new Character(GameObject.Find("player").transform.position);
     }
 
     private void Update()
     {
-        player.UpdatePosition(GameObject.Find("player").transform.position);
         monster.UpdatePosition(transform.position);
         
-        var nextDir = FindPath(monster.GetPositionInTilemap(tilemap), player.GetPositionInTilemap(tilemap));
+        var nextDir = FindPath(monster.GetPositionInTilemap(tilemap), map.playerPosition);
         Debug.Log(nextDir);
         nextDir += new Vector2(-10, -2);
         nextDir.x += 0.5f;
