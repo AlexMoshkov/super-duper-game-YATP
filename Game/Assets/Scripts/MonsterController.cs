@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Security.Cryptography;
 using UnityEngine;
 using UnityEngine.Tilemaps;
 
@@ -8,7 +9,14 @@ public class MonsterController : MonoBehaviour
 {
     public Tilemap tilemap;
     private Map map;
+    public int currentHealth;
+    [SerializeField]
     private float acceleration = 1.5f;
+
+    [SerializeField]
+    public int maxHealth;
+
+    public GameObject player;
 
     private SpriteRenderer sprite;
 
@@ -16,15 +24,25 @@ public class MonsterController : MonoBehaviour
     {
         map = tilemap.GetComponent<TilemapScript>().map;
         sprite = GetComponent<SpriteRenderer>();
+        currentHealth = maxHealth;
+        player = GameObject.Find("Player");
     }
 
-    private void FixedUpdate()
+    private void Update()
     {
         Vector3 nextPos = FindPath(gameObject.GetPositionInTilemap(tilemap), map.playerPosition);
-        nextPos = gameObject.GetWordPositionFromTilemap(tilemap, nextPos);
+        nextPos = gameObject.GetWorldPositionFromTilemap(tilemap, nextPos);
         nextPos -= transform.position;
+        //Debug.Log(nextPos);
         transform.position += new Vector3(nextPos.x, nextPos.y, 0).normalized * acceleration * Time.deltaTime;
         sprite.flipX = nextPos.x < 0;
+    }
+
+    public void TakeDamage()
+    {
+        currentHealth -= 5; 
+        if (currentHealth < 0)
+            Destroy(gameObject);    
     }
 
     private Vector2 FindPath(Vector2 start, Vector2 end)
@@ -55,13 +73,23 @@ public class MonsterController : MonoBehaviour
                 queue.Enqueue(newPoint);
             }
 
-            if (track.ContainsKey(end)) break;
+            if (track.ContainsKey(end + new Vector2(1, 0)) || track.ContainsKey(end + new Vector2(-1, 0))) break;
         }
 
-        if (!track.ContainsKey(end))
+        if (!track.ContainsKey(end + new Vector2(1, 0)) && !track.ContainsKey(end + new Vector2(-1, 0)))
             return start;
         
         var partItem = end;
+
+        if (track.ContainsKey(end + new Vector2(1, 0)))
+        {
+            partItem = end + new Vector2(1, 0);
+        }
+        else
+        {
+            partItem = end + new Vector2(-1, 0);
+        }
+
         var result = new List<Vector2>();
         
         while (partItem != new Vector2(999999, 999999))
@@ -74,5 +102,13 @@ public class MonsterController : MonoBehaviour
         if (result.Count >= 2)
             return result[1];
         return start;
+    }
+    
+    public void OnTriggerStay2D(Collider2D col)
+    {
+        TakeDamage();
+        Debug.Log("HIT");
+
+
     }
 }

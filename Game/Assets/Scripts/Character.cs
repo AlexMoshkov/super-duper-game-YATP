@@ -15,7 +15,7 @@ public static class GameObjectExtension
         return new Vector2(positionInTilemap.x, positionInTilemap.y);
     }
 
-    public static Vector3 GetWordPositionFromTilemap(this GameObject obj, Tilemap tilemap, Vector2 pos)
+    public static Vector3 GetWorldPositionFromTilemap(this GameObject obj, Tilemap tilemap, Vector2 pos)
     {
         pos += new Vector2(-10, -2);
         pos.x += 0.5f;

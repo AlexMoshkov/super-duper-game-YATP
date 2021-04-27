@@ -8,7 +8,7 @@ public class Map
     public Map(CellType[,] map, Vector2 playerPos)
     {
         this.map = map;
-        this.playerPosition = playerPos;
+        playerPosition = playerPos;
     }
 
     public bool Contains(Vector2 point)
