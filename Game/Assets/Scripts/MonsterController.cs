@@ -56,7 +56,7 @@ public class MonsterController : MonoBehaviour
         while (queue.Count != 0)
         {
             var point = queue.Dequeue();
-            
+
             for (var dx = -1; dx <= 1; dx++)
             for (var dy = -1; dy <= 1; dy++)
             {
@@ -64,10 +64,11 @@ public class MonsterController : MonoBehaviour
                     continue;
                 var newPoint = new Vector2(point.x + dx, point.y + dy);
                 if (visited.Contains(newPoint) || !map.Contains(newPoint) ||
-                    map.map[(int)newPoint.x, (int)newPoint.y] == CellType.Barrel)
+                    map.map[(int) newPoint.x, (int) newPoint.y] == CellType.Barrel)
                 {
                     continue;
                 }
+
                 track[newPoint] = point;
                 visited.Add(newPoint);
                 queue.Enqueue(newPoint);
@@ -78,7 +79,7 @@ public class MonsterController : MonoBehaviour
 
         if (!track.ContainsKey(end + new Vector2(1, 0)) && !track.ContainsKey(end + new Vector2(-1, 0)))
             return start;
-        
+
         var partItem = end;
 
         if (track.ContainsKey(end + new Vector2(1, 0)))
@@ -91,7 +92,7 @@ public class MonsterController : MonoBehaviour
         }
 
         var result = new List<Vector2>();
-        
+
         while (partItem != new Vector2(999999, 999999))
         {
             result.Add(partItem);
@@ -102,13 +103,5 @@ public class MonsterController : MonoBehaviour
         if (result.Count >= 2)
             return result[1];
         return start;
-    }
-    
-    public void OnTriggerStay2D(Collider2D col)
-    {
-        TakeDamage();
-        Debug.Log("HIT");
-
-
     }
 }

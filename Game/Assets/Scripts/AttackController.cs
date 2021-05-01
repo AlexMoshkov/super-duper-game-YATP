@@ -7,37 +7,32 @@ using UnityEngine.Tilemaps;
 
 public class AttackController : MonoBehaviour
 {
-    [SerializeField]
-    public float acceleration = 1e-5f;
-    
-    // Start is called before the first frame update
-    private GameObject player;
-    private BoxCollider2D zone;
-    private AttackType attack; 
-
+    private BoxCollider2D colider;
+    private Animator playerAnimator;
+    private int time;
     private void Start()
     {
-        player = GameObject.Find("Player");
-        zone = GameObject.Find("Attack Zone").GetComponent<BoxCollider2D>();
-        gameObject.SetActive(false);
+        colider = GetComponent<BoxCollider2D>();
+        playerAnimator = GameObject.Find("Player").GetComponent<Animator>();
     }
 
-    private void Update()
+    private void FixedUpdate()
     {
-        Debug.Log("Hellow");
-        attack = player.GetComponent<PlayerController>().attack;
-        if (attack == AttackType.NormalAttack)
+        var attack0 = Input.GetKeyDown(KeyCode.A);
+        if (attack0)
         {
-            DoAttack(attack);
-            attack = AttackType.Empty;
-            gameObject.SetActive(false);
+            playerAnimator.SetTrigger("attack");
+
+            var list = new List<Collider2D>();
+            colider.OverlapCollider(new ContactFilter2D(), list);
+            foreach (var collider in list)
+            {
+                if (collider.tag == "Enemy")
+                {
+                    collider.GetComponentInParent<MonsterController>().TakeDamage();
+                    Debug.Log("HIT");
+                }
+            }
         }
     }
-
-    public void DoAttack(AttackType attack)
-    {
-
-        gameObject.SetActive(true);
-    }
-    
 }
