@@ -127,6 +127,7 @@ public class MonsterController : MonoBehaviour
         if (currentHealth <= 0)
         {
             animator.SetBool("IsDeath", true);
+            yield return new WaitForSeconds(3f);
             Destroy(gameObject);
         }
     }

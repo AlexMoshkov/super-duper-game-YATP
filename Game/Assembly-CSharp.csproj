@@ -57,6 +57,7 @@
      <Compile Include="Assets\Scripts\TilemapScript.cs" />
      <Compile Include="Assets\Scripts\CellType.cs" />
      <Compile Include="Assets\Scripts\Map.cs" />
+     <Compile Include="Assets\Scripts\Panel.cs" />
      <Compile Include="Assets\Scripts\CameraScipt.cs" />
      <Compile Include="Assets\Scripts\AttackController.cs" />
      <Compile Include="Assets\Scripts\PlayerController.cs" />
