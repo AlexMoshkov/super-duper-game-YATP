@@ -489,7 +489,7 @@ BoxCollider2D:
   m_IsTrigger: 1
   m_UsedByEffector: 0
   m_UsedByComposite: 0
-  m_Offset: {x: 0.2026099, y: -0.015878052}
+  m_Offset: {x: 0.26909646, y: -0.015878052}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0, y: 0}
@@ -500,7 +500,7 @@ BoxCollider2D:
     adaptiveTiling: 0
   m_AutoTiling: 0
   serializedVersion: 2
-  m_Size: {x: 0.67775416, y: 0.1636931}
+  m_Size: {x: 0.5769113, y: 0.1636931}
   m_EdgeRadius: 0
 --- !u!114 &536634633
 MonoBehaviour:
@@ -514,6 +514,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fd20a4dfb60caf747984f93ae1eba924, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  attackDelay: 0.5
 --- !u!1 &779931346
 GameObject:
   m_ObjectHideFlags: 0
@@ -595,7 +596,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 779931346}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 13.51, y: -0.51, z: -2}
+  m_LocalPosition: {x: 13.43, y: -0.51, z: -2}
   m_LocalScale: {x: 2.5, y: 2.5, z: 0}
   m_Children: []
   m_Father: {fileID: 0}
@@ -616,7 +617,7 @@ MonoBehaviour:
   tilemap: {fileID: 1259056060}
   currentHealth: 0
   acceleration: 1.5
-  maxHealth: 100
+  maxHealth: 15
   player: {fileID: 0}
 --- !u!95 &779931350
 Animator:
@@ -671,7 +672,7 @@ Rigidbody2D:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 779931346}
-  m_BodyType: 1
+  m_BodyType: 0
   m_Simulated: 1
   m_UseFullKinematicContacts: 0
   m_UseAutoMass: 0

@@ -11,6 +11,7 @@ public class PlayerController : MonoBehaviour
     
     private Animator animator;
     private SpriteRenderer sprite;
+    private GameObject attackZone;
     
     public bool attack0;
     void Awake()
@@ -18,6 +19,7 @@ public class PlayerController : MonoBehaviour
         rigidBodyComponent = GetComponent<Rigidbody2D>();
         animator = GetComponent<Animator>();
         sprite = GetComponent<SpriteRenderer>();
+        attackZone = GameObject.Find("Attack Zone");
     }
     
     void Update()
@@ -35,6 +37,9 @@ public class PlayerController : MonoBehaviour
        
         var moveVector = new Vector3(left + right, up + down, 0);
         sprite.flipX = moveVector.x < 0;
+        if (moveVector.x != 0)
+            attackZone.transform.localScale = new Vector3(moveVector.x, 1, 1);
+        
         animator.SetBool("IsRun", true);
         transform.position += moveVector * acceleration * Time.deltaTime;
     }

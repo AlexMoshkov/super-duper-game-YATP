@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Security.Cryptography;
 using UnityEngine;
+using UnityEngine.Rendering;
 using UnityEngine.Tilemaps;
 
 public class MonsterController : MonoBehaviour
@@ -19,6 +20,10 @@ public class MonsterController : MonoBehaviour
     public GameObject player;
 
     private SpriteRenderer sprite;
+    private Animator animator;
+    private Rigidbody2D rigidBody;
+    
+    
 
     void Start()
     {
@@ -26,23 +31,30 @@ public class MonsterController : MonoBehaviour
         sprite = GetComponent<SpriteRenderer>();
         currentHealth = maxHealth;
         player = GameObject.Find("Player");
+        animator = GetComponent<Animator>();
+        rigidBody = GetComponent<Rigidbody2D>();
     }
 
     private void Update()
     {
-        Vector3 nextPos = FindPath(gameObject.GetPositionInTilemap(tilemap), map.playerPosition);
+        var start = gameObject.GetPositionInTilemap(tilemap);
+        Vector3 nextPos = FindPath(start, map.playerPosition);
         nextPos = gameObject.GetWorldPositionFromTilemap(tilemap, nextPos);
-        nextPos -= transform.position;
-        //Debug.Log(nextPos);
-        transform.position += new Vector3(nextPos.x, nextPos.y, 0).normalized * acceleration * Time.deltaTime;
-        sprite.flipX = nextPos.x < 0;
+
+        if (nextPos - transform.position != Vector3.zero)
+            animator.SetBool("IsRun", true);
+        else
+            animator.SetBool("IsRun", false);
+
+        if (nextPos.x - transform.position.x != 0)
+            sprite.flipX = (nextPos.x - transform.position.x) < 0;
+        
+        transform.position = Vector3.MoveTowards(transform.position, nextPos, acceleration * Time.deltaTime);
     }
 
     public void TakeDamage()
     {
-        currentHealth -= 5; 
-        if (currentHealth < 0)
-            Destroy(gameObject);    
+        StartCoroutine(Damag());
     }
 
     private Vector2 FindPath(Vector2 start, Vector2 end)
@@ -64,7 +76,7 @@ public class MonsterController : MonoBehaviour
                     continue;
                 var newPoint = new Vector2(point.x + dx, point.y + dy);
                 if (visited.Contains(newPoint) || !map.Contains(newPoint) ||
-                    map.map[(int) newPoint.x, (int) newPoint.y] == CellType.Barrel)
+                    map.map[(int) newPoint.x, (int) newPoint.y] != CellType.Empty)
                 {
                     continue;
                 }
@@ -103,5 +115,19 @@ public class MonsterController : MonoBehaviour
         if (result.Count >= 2)
             return result[1];
         return start;
+    }
+    
+    private IEnumerator Damag()
+    {
+        yield return new WaitForSeconds(0.5f);
+        currentHealth -= 5;
+        Debug.Log("HIT");
+        var force = new Vector3(sprite.flipX ? 40f : -40f, 0, 0);
+        rigidBody.AddForce(force, ForceMode2D.Impulse);
+        if (currentHealth <= 0)
+        {
+            animator.SetBool("IsDeath", true);
+            Destroy(gameObject);
+        }
     }
 }

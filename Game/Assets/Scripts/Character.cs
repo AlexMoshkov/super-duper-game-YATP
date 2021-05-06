@@ -20,6 +20,6 @@ public static class GameObjectExtension
         pos += new Vector2(-10, -2);
         pos.x += 0.5f;
         pos.y += 0.5f;
-        return new Vector3(pos.x, pos.y, 0);
+        return new Vector3(pos.x, pos.y, -2);
     }
 }
