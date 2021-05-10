@@ -37,24 +37,33 @@ public class MonsterController : MonoBehaviour
 
     private void Update()
     {
-        var start = gameObject.GetPositionInTilemap(tilemap);
-        Vector3 nextPos = FindPath(start, map.playerPosition);
-        nextPos = gameObject.GetWorldPositionFromTilemap(tilemap, nextPos);
-
-        if (nextPos - transform.position != Vector3.zero)
-            animator.SetBool("IsRun", true);
-        else
+        if (currentHealth <= 0)
+        {
             animator.SetBool("IsRun", false);
+            animator.SetBool("IsDeath", true);
+            StartCoroutine(WaitAndDie());
+        }
+        else
+        {
+            var start = gameObject.GetPositionInTilemap(tilemap);
+            Vector3 nextPos = FindPath(start, map.playerPosition);
+            nextPos = gameObject.GetWorldPositionFromTilemap(tilemap, nextPos);
 
-        if (nextPos.x - transform.position.x != 0)
-            sprite.flipX = (nextPos.x - transform.position.x) < 0;
-        
-        transform.position = Vector3.MoveTowards(transform.position, nextPos, acceleration * Time.deltaTime);
+            if (nextPos - transform.position != Vector3.zero)
+                animator.SetBool("IsRun", true);
+            else
+                animator.SetBool("IsRun", false);
+
+            if (nextPos.x - transform.position.x != 0)
+                sprite.flipX = (nextPos.x - transform.position.x) < 0;
+
+            transform.position = Vector3.MoveTowards(transform.position, nextPos, acceleration * Time.deltaTime);
+        }
     }
 
-    public void TakeDamage()
+    public void TakeDamage(int dmg)
     {
-        StartCoroutine(Damag());
+        StartCoroutine(Damage(dmg));
     }
 
     private Vector2 FindPath(Vector2 start, Vector2 end)
@@ -117,18 +126,21 @@ public class MonsterController : MonoBehaviour
         return start;
     }
     
-    private IEnumerator Damag()
+    private IEnumerator Damage(int dmg)
     {
         yield return new WaitForSeconds(0.5f);
-        currentHealth -= 5;
+        currentHealth -= dmg;
         Debug.Log("HIT");
-        var force = new Vector3(sprite.flipX ? 40f : -40f, 0, 0);
-        rigidBody.AddForce(force, ForceMode2D.Impulse);
-        if (currentHealth <= 0)
+        Debug.Log(dmg);
+        if (currentHealth > 0 && dmg > 0)
         {
-            animator.SetBool("IsDeath", true);
-            yield return new WaitForSeconds(3f);
-            Destroy(gameObject);
+            var force = new Vector3(sprite.flipX ? 20f : -20f, 0, 0);
+            rigidBody.AddForce(force, ForceMode2D.Impulse);
         }
+    }
+
+    private IEnumerator WaitAndDie()
+    {
+        yield return new WaitForSeconds(5f); Destroy(gameObject);
     }
 }

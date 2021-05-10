@@ -4,12 +4,18 @@ using System.Collections.Generic;
 using System.Drawing;
 using UnityEngine;
 using UnityEngine.Tilemaps;
+using UnityEngine.UI;
 
 public class AttackController : MonoBehaviour
 {
-    [SerializeField]
-    public float attackDelay = 0.5f;
-    
+    [SerializeField] public float attackDelay = 0.5f;
+    [SerializeField] private Transform shootPosition;
+    [SerializeField] private GameObject fireBall;
+    [SerializeField] private GameObject player;
+    [SerializeField] private Image manaBar;
+    private float manaCount;
+    private float manaCost;
+    private int attackDmg;
     private BoxCollider2D colider;
     private Animator playerAnimator;
     private float timeLeft;
@@ -18,6 +24,7 @@ public class AttackController : MonoBehaviour
     
     private void Start()
     {
+        manaCount = 1f;
         colider = GetComponent<BoxCollider2D>();
         playerAnimator = GameObject.Find("Player").GetComponent<Animator>();
         timeLeft = attackDelay;
@@ -29,6 +36,8 @@ public class AttackController : MonoBehaviour
         attackType = Input.GetKeyDown(KeyCode.A) ? AttackType.NormalAttack : AttackType.NoAttack;
         if (attackType == AttackType.NoAttack)
             attackType = Input.GetKeyDown(KeyCode.W) ? AttackType.HeavyAttack : AttackType.NoAttack;
+        if (attackType == AttackType.NoAttack)
+            attackType = Input.GetKeyDown(KeyCode.Q) ? AttackType.SpecialAttack : AttackType.NoAttack;
 
         if (isAttacking)
             timeLeft -= Time.deltaTime;
@@ -46,10 +55,26 @@ public class AttackController : MonoBehaviour
                 case AttackType.NormalAttack:
                     timeLeft = 0.5f;
                     triggerAttack = "normal";
+                    attackDmg = 5;
                     break;
                 case AttackType.HeavyAttack:
                     timeLeft = 1f;
                     triggerAttack = "heavy";
+                    attackDmg = 8;
+                    break;
+                case AttackType.SpecialAttack:
+                    manaCost = 0.3f;
+                    attackDmg = 0;
+                    if (manaCount - manaCost > 0)
+                    {
+                        timeLeft = 1f;
+                        triggerAttack = "special";
+                        Quaternion rotate = Quaternion.identity;
+                        if (player.GetComponent<SpriteRenderer>().flipX)
+                            rotate.z = 10000f;
+                        Instantiate(fireBall, shootPosition.position, rotate);
+                        manaCount -= manaCost;
+                    }
                     break;
             }
             
@@ -60,7 +85,8 @@ public class AttackController : MonoBehaviour
             
             foreach (var collider in list)
                 if (collider.tag == "Enemy")
-                    collider.GetComponentInParent<MonsterController>().TakeDamage();
+                    collider.GetComponentInParent<MonsterController>().TakeDamage(attackDmg);
+            manaBar.fillAmount = manaCount;
         }
     }
 }
@@ -69,5 +95,6 @@ public enum AttackType
 {
     NoAttack,
     NormalAttack,
-    HeavyAttack
+    HeavyAttack,
+    SpecialAttack
 }
