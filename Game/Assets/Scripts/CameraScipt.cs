@@ -12,8 +12,23 @@ public class CameraScipt : MonoBehaviour
     }
 
     // Update is called once per frame
-    void Update()
+    void FixedUpdate()
     {
-        transform.position = new Vector3(player.transform.position.x, 1, -10);
+        // var stop = false;
+        // var list = new List<Collider2D>();
+        // GetComponent<BoxCollider2D>().OverlapCollider(new ContactFilter2D(), list);
+        // foreach (var collider in list)
+        // {
+        //     if (collider.tag == "Enemy")
+        //         stop = true;
+        // }
+        //transform.position = new Vector3(player.transform.position.x, 1, -10);
+        if (transform.position.x + 2 < player.transform.position.x)
+        {
+            transform.position =
+                Vector3.MoveTowards(new Vector3(transform.position.x, 1, -10),
+                    new Vector3(player.transform.position.x, 1,-10), 2f * Time.deltaTime);
+        }
+        
     }
 }

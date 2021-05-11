@@ -32,7 +32,6 @@ public class AttackController : MonoBehaviour
 
     private void Update()
     {
-        
         attackType = Input.GetKeyDown(KeyCode.A) ? AttackType.NormalAttack : AttackType.NoAttack;
         if (attackType == AttackType.NoAttack)
             attackType = Input.GetKeyDown(KeyCode.W) ? AttackType.HeavyAttack : AttackType.NoAttack;
@@ -91,10 +90,3 @@ public class AttackController : MonoBehaviour
     }
 }
 
-public enum AttackType
-{
-    NoAttack,
-    NormalAttack,
-    HeavyAttack,
-    SpecialAttack
-}

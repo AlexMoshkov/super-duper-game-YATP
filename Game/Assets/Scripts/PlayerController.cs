@@ -8,30 +8,47 @@ using UnityEngine.UI;
 public class PlayerController : MonoBehaviour
 {
     [SerializeField] private Image HPBar;
+    [SerializeField] private float attackDelay = 0.5f;
+    [SerializeField] private float acceleration = 2f;
+
+    [SerializeField] private Transform shootPosition;
+    [SerializeField] private GameObject fireBall;
+    [SerializeField] private Image manaBar;
+    
     private float HPCount;
-    private float acceleration = 2f;
+    private float manaCount;
+    private float manaCost = 0.3f;
+    
     public Rigidbody2D rigidBodyComponent;
     
     private Animator animator;
     private SpriteRenderer sprite;
     private GameObject attackZone;
+
+    private bool isAttacking = false;
+    private float timeLeft;
     
-    public bool attack0;
     void Awake()
     {
-        HPCount = 1f;
+        HPCount = 10f;
+        manaBar.fillAmount = 1f;
         rigidBodyComponent = GetComponent<Rigidbody2D>();
         animator = GetComponent<Animator>();
         sprite = GetComponent<SpriteRenderer>();
         attackZone = GameObject.Find("Attack Zone");
+        timeLeft = attackDelay;
     }
     
     void Update()
     {
-        animator.SetBool("IsRun", false);
-        if (Input.GetButton("Vertical") || Input.GetButton("Horizontal"))
-            Run();
-        HPBar.fillAmount = HPCount;
+        if (!animator.GetBool("IsDeath"))
+        {
+            animator.SetBool("IsRun", false);
+            MakeAttack();
+            if (Input.GetButton("Vertical") || Input.GetButton("Horizontal"))
+                Run();
+            HPBar.fillAmount = HPCount;
+        }
     }
     private void Run()
     {
@@ -48,21 +65,101 @@ public class PlayerController : MonoBehaviour
         animator.SetBool("IsRun", true);
         transform.position += moveVector * acceleration * Time.deltaTime;
     }
-    private void OnTriggerEnter2D(Collider2D collision)
+
+    private void MakeAttack()
     {
-        if (collision.tag == "Enemy")
+        var attackType = Input.GetKeyDown(KeyCode.A) ? AttackType.NormalAttack : AttackType.NoAttack;
+        if (attackType == AttackType.NoAttack)
+            attackType = Input.GetKeyDown(KeyCode.W) ? AttackType.HeavyAttack : AttackType.NoAttack;
+        if (attackType == AttackType.NoAttack)
+            attackType = Input.GetKeyDown(KeyCode.Q) ? AttackType.SpecialAttack : AttackType.NoAttack;
+
+        if (isAttacking)
+            timeLeft -= Time.deltaTime;
+        
+        if (timeLeft < 0) 
+            isAttacking = false;
+        
+        if (attackType != AttackType.NoAttack && !isAttacking)
         {
-            GetDamage(0.25);
+            isAttacking = true;
+
+            var triggerAttack = "";
+            var attackDmg = 0;
+            switch (attackType)
+            {
+                case AttackType.NormalAttack:
+                    timeLeft = 0.5f;
+                    triggerAttack = "normal";
+                    attackDmg = 5;
+                    break;
+                case AttackType.HeavyAttack:
+                    timeLeft = 1f;
+                    triggerAttack = "heavy";
+                    attackDmg = 8;
+                    break;
+                case AttackType.SpecialAttack:
+                    manaCost = 0.3f;
+                    if (manaBar.fillAmount - manaCost < 0)
+                        break;
+                    timeLeft = 1f;
+                    triggerAttack = "special";
+                    Quaternion rotate = Quaternion.identity;
+                    if (sprite.flipX)
+                        rotate.z = 10000f;
+                    Instantiate(fireBall, shootPosition.position, rotate);
+                    manaBar.fillAmount -= manaCost;
+                    break;
+            }
+
+            if (triggerAttack == "")
+                return;
+            animator.SetTrigger(triggerAttack);
+            
+            var list = new List<Collider2D>();
+            attackZone.GetComponent<BoxCollider2D>().OverlapCollider(new ContactFilter2D(), list);
+            foreach (var collider in list)
+                if (collider.tag == "Enemy")
+                    collider.GetComponentInParent<MonsterController>().TakeDamage(attackDmg);
         }
     }
-    public void GetDamage(double dmg)
+
+    public void TakeDamage(int damage)
     {
-        var newDmg = float.Parse(dmg.ToString());
-        StartCoroutine(GetDamage(newDmg));
+        StartCoroutine(Damage(damage));
     }
-    public IEnumerator GetDamage(float dmg)
+    
+    private IEnumerator Damage(int damage)
     {
-        HPCount -= dmg;
-        yield return new WaitForSeconds(1f);
+        if (animator.GetBool("IsDeath"))
+            yield break;
+        
+        yield return new WaitForSeconds(0.5f);
+        HPCount -= damage;
+        animator.SetTrigger("takeHit");
+        
+        // if (HPCount > 0 && damage > 0)
+        // {
+        //     var force = new Vector3(sprite.flipX ? 20f : -20f, 0, 0);
+        //     rigidBody.AddForce(force, ForceMode2D.Impulse);
+        // }
+            
+        if (HPCount <= 0)
+        {
+            animator.SetBool("IsRun", false);
+            animator.SetBool("IsDeath", true);
+            yield return new WaitForSeconds(5f);
+            Destroy(gameObject);
+            Debug.Log("YOU ARE DEAD");
+        }
     }
+    
+}
+
+public enum AttackType
+{
+    NoAttack,
+    NormalAttack,
+    HeavyAttack,
+    SpecialAttack
 }

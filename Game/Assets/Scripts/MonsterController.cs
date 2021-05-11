@@ -17,11 +17,40 @@ public class MonsterController : MonoBehaviour
     [SerializeField]
     public int maxHealth;
 
-    public GameObject player;
+    [SerializeField] private GameObject attackZone;
 
+    private int attackDamage = 5;
+    
     private SpriteRenderer sprite;
     private Animator animator;
     private Rigidbody2D rigidBody;
+    
+    private bool isAttacking;
+    private float timeLeft;
+    private bool takingDamage = false;
+    private void Attack()
+    {
+        if (isAttacking)
+            timeLeft -= Time.deltaTime;
+
+        if (timeLeft < 0)
+            isAttacking = false;
+
+        if (!isAttacking)
+        {
+            isAttacking = true;
+            timeLeft = 4f;
+            animator.SetTrigger("attack");
+            
+            var list = new List<Collider2D>();
+            attackZone.GetComponent<BoxCollider2D>().OverlapCollider(new ContactFilter2D(), list);
+            foreach (var collider in list)
+            {
+                if (collider.tag == "Player")
+                    collider.GetComponentInParent<PlayerController>().TakeDamage(attackDamage);
+            }
+        }
+    }
     
     
 
@@ -30,46 +59,51 @@ public class MonsterController : MonoBehaviour
         map = tilemap.GetComponent<TilemapScript>().map;
         sprite = GetComponent<SpriteRenderer>();
         currentHealth = maxHealth;
-        player = GameObject.Find("Player");
         animator = GetComponent<Animator>();
         rigidBody = GetComponent<Rigidbody2D>();
     }
 
     private void Update()
     {
-        if (currentHealth <= 0)
-        {
-            animator.SetBool("IsRun", false);
-            animator.SetBool("IsDeath", true);
-            StartCoroutine(WaitAndDie());
-        }
-        else
+        Debug.Log(attackZone.name);
+        if (currentHealth > 0 && !takingDamage)
         {
             var start = gameObject.GetPositionInTilemap(tilemap);
             Vector3 nextPos = FindPath(start, map.playerPosition);
-            nextPos = gameObject.GetWorldPositionFromTilemap(tilemap, nextPos);
+            if (nextPos != new Vector3(99999, 99999, 0))
+            {
+                nextPos = gameObject.GetWorldPositionFromTilemap(tilemap, nextPos);
 
-            if (nextPos - transform.position != Vector3.zero)
-                animator.SetBool("IsRun", true);
-            else
-                animator.SetBool("IsRun", false);
+                if (nextPos - transform.position != Vector3.zero)
+                    animator.SetBool("IsRun", true);
+                else
+                    animator.SetBool("IsRun", false);
 
-            if (nextPos.x - transform.position.x != 0)
-                sprite.flipX = (nextPos.x - transform.position.x) < 0;
+                if (nextPos.x - transform.position.x != 0)
+                {
+                    sprite.flipX = (nextPos.x - transform.position.x) < 0;
+                }
 
-            transform.position = Vector3.MoveTowards(transform.position, nextPos, acceleration * Time.deltaTime);
+                if (!animator.GetBool("IsRun"))
+                {
+                    Attack();
+                }
+
+                transform.position = Vector3.MoveTowards(transform.position, nextPos, acceleration * Time.deltaTime);
+            }
         }
     }
 
-    public void TakeDamage(int dmg)
+    public void TakeDamage(int damage)
     {
-        StartCoroutine(Damage(dmg));
+        if (damage != 0 && currentHealth > 0)
+            StartCoroutine(Damage(damage));
     }
 
     private Vector2 FindPath(Vector2 start, Vector2 end)
     {
         var track = new Dictionary<Vector2, Vector2>();
-        track[start] = new Vector2(999999, 999999);
+        track[start] = new Vector2(99999, 99999);
         var queue = new Queue<Vector2>();
         var visited = new HashSet<Vector2>();
         visited.Add(start);
@@ -78,8 +112,8 @@ public class MonsterController : MonoBehaviour
         {
             var point = queue.Dequeue();
 
-            for (var dx = -1; dx <= 1; dx++)
             for (var dy = -1; dy <= 1; dy++)
+            for (var dx = -1; dx <= 1; dx++)
             {
                 if (Math.Abs(dx) + Math.Abs(dy) != 1)
                     continue;
@@ -114,11 +148,14 @@ public class MonsterController : MonoBehaviour
 
         var result = new List<Vector2>();
 
-        while (partItem != new Vector2(999999, 999999))
+        while (partItem != new Vector2(99999, 99999))
         {
             result.Add(partItem);
             partItem = track[partItem];
         }
+
+        if (result.Count >= 5)
+            return new Vector2(99999, 99999);
 
         result.Reverse();
         if (result.Count >= 2)
@@ -129,7 +166,9 @@ public class MonsterController : MonoBehaviour
     private IEnumerator Damage(int dmg)
     {
         yield return new WaitForSeconds(0.5f);
+        takingDamage = true;
         currentHealth -= dmg;
+        animator.SetTrigger("takeHit");
         Debug.Log("HIT");
         Debug.Log(dmg);
         if (currentHealth > 0 && dmg > 0)
@@ -137,10 +176,15 @@ public class MonsterController : MonoBehaviour
             var force = new Vector3(sprite.flipX ? 20f : -20f, 0, 0);
             rigidBody.AddForce(force, ForceMode2D.Impulse);
         }
-    }
 
-    private IEnumerator WaitAndDie()
-    {
-        yield return new WaitForSeconds(5f); Destroy(gameObject);
+        if (currentHealth <= 0)
+        {
+            animator.SetBool("IsRun", false);
+            animator.SetBool("IsDeath", true);
+            
+            yield return new WaitForSeconds(5f);
+            Destroy(gameObject);
+        }
+        takingDamage = false;
     }
 }
