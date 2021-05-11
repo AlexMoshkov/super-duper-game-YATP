@@ -28,7 +28,10 @@ public class FireShoot : MonoBehaviour
     }
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        collision.GetComponentInParent<MonsterController>().TakeDamage(11);
-        Destroy(gameObject);
+        if (collision.tag == "Enemy")
+        {
+            collision.GetComponentInParent<MonsterController>().TakeDamage(11);
+            Destroy(gameObject);
+        }
     }
 }

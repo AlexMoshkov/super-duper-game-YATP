@@ -3,9 +3,12 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Tilemaps;
+using UnityEngine.UI;
 
 public class PlayerController : MonoBehaviour
 {
+    [SerializeField] private Image HPBar;
+    private float HPCount;
     private float acceleration = 2f;
     public Rigidbody2D rigidBodyComponent;
     
@@ -16,6 +19,7 @@ public class PlayerController : MonoBehaviour
     public bool attack0;
     void Awake()
     {
+        HPCount = 1f;
         rigidBodyComponent = GetComponent<Rigidbody2D>();
         animator = GetComponent<Animator>();
         sprite = GetComponent<SpriteRenderer>();
@@ -27,6 +31,7 @@ public class PlayerController : MonoBehaviour
         animator.SetBool("IsRun", false);
         if (Input.GetButton("Vertical") || Input.GetButton("Horizontal"))
             Run();
+        HPBar.fillAmount = HPCount;
     }
     private void Run()
     {
@@ -42,5 +47,22 @@ public class PlayerController : MonoBehaviour
         
         animator.SetBool("IsRun", true);
         transform.position += moveVector * acceleration * Time.deltaTime;
+    }
+    private void OnTriggerEnter2D(Collider2D collision)
+    {
+        if (collision.tag == "Enemy")
+        {
+            GetDamage(0.25);
+        }
+    }
+    public void GetDamage(double dmg)
+    {
+        var newDmg = float.Parse(dmg.ToString());
+        StartCoroutine(GetDamage(newDmg));
+    }
+    public IEnumerator GetDamage(float dmg)
+    {
+        HPCount -= dmg;
+        yield return new WaitForSeconds(1f);
     }
 }
