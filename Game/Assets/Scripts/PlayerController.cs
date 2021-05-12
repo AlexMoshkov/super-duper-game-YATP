@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.Tilemaps;
 using UnityEngine.UI;
 
@@ -30,7 +31,7 @@ public class PlayerController : MonoBehaviour
     
     void Awake()
     {
-        HPCount = 10f;
+        HPCount = 30;
         manaBar.fillAmount = 1f;
         rigidBodyComponent = GetComponent<Rigidbody2D>();
         animator = GetComponent<Animator>();
@@ -47,8 +48,8 @@ public class PlayerController : MonoBehaviour
             MakeAttack();
             if (Input.GetButton("Vertical") || Input.GetButton("Horizontal"))
                 Run();
-            HPBar.fillAmount = HPCount;
         }
+        HPBar.fillAmount = HPCount / 30;
     }
     private void Run()
     {
@@ -153,7 +154,15 @@ public class PlayerController : MonoBehaviour
             Debug.Log("YOU ARE DEAD");
         }
     }
-    
+
+    private void OnTriggerEnter2D(Collider2D other)
+    {
+        Debug.Log("EXIT");
+        if (other.tag == "Finish")
+        {
+            SceneManager.LoadScene("Level2");
+        }
+    }
 }
 
 public enum AttackType

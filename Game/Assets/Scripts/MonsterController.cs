@@ -154,7 +154,7 @@ public class MonsterController : MonoBehaviour
             partItem = track[partItem];
         }
 
-        if (result.Count >= 5)
+        if (result.Count >= 10)
             return new Vector2(99999, 99999);
 
         result.Reverse();
@@ -182,8 +182,8 @@ public class MonsterController : MonoBehaviour
             animator.SetBool("IsRun", false);
             animator.SetBool("IsDeath", true);
             
-            yield return new WaitForSeconds(5f);
-            Destroy(gameObject);
+            //yield return new WaitForSeconds(5f);
+            Destroy(gameObject, 5f);
         }
         takingDamage = false;
     }

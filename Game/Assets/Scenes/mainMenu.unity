@@ -439,7 +439,7 @@ MonoBehaviour:
     m_VerticalOverflow: 0
     m_LineSpacing: 1
   m_Text: "Game create by:\n                              Moshkov Alex\n\t \t                     
-    Mikov Kirill\nv 1.0.0"
+    Mikov Kirill\nv 1.0.0.0"
 --- !u!222 &959914952
 CanvasRenderer:
   m_ObjectHideFlags: 0
