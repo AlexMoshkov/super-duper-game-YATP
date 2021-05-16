@@ -11,13 +11,13 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private Image HPBar;
     [SerializeField] private float attackDelay = 0.5f;
     [SerializeField] private float acceleration = 2f;
+    [SerializeField] private float speedManaRegeneration = 0.5f;
 
     [SerializeField] private Transform shootPosition;
     [SerializeField] private GameObject fireBall;
     [SerializeField] private Image manaBar;
     
     private float HPCount;
-    private float manaCount;
     private float manaCost = 0.3f;
     
     public Rigidbody2D rigidBodyComponent;
@@ -57,6 +57,7 @@ public class PlayerController : MonoBehaviour
                 Run();
         }
         HPBar.fillAmount = HPCount / 30;
+        manaBar.fillAmount += speedManaRegeneration * Time.deltaTime;
     }
     private void Run()
     {
@@ -72,6 +73,7 @@ public class PlayerController : MonoBehaviour
         
         animator.SetBool("IsRun", true);
         transform.position += moveVector * acceleration * Time.deltaTime;
+        
     }
 
     private void MakeAttack()
@@ -97,20 +99,24 @@ public class PlayerController : MonoBehaviour
             switch (attackType)
             {
                 case AttackType.NormalAttack:
-                    timeLeft = 0.5f;
+                    timeLeft = 1f;
                     triggerAttack = "normal";
                     attackDmg = 5;
                     break;
                 case AttackType.HeavyAttack:
-                    timeLeft = 1f;
+                    manaCost = 0.1f;
+                    if (manaBar.fillAmount - manaCost < 0)
+                        break;
+                    timeLeft = 2f;
                     triggerAttack = "heavy";
                     attackDmg = 8;
+                    manaBar.fillAmount -= manaCost;
                     break;
                 case AttackType.SpecialAttack:
                     manaCost = 0.3f;
                     if (manaBar.fillAmount - manaCost < 0)
                         break;
-                    timeLeft = 1f;
+                    timeLeft = 5f;
                     triggerAttack = "special";
                     Quaternion rotate = Quaternion.identity;
                     if (sprite.flipX)
@@ -165,9 +171,8 @@ public class PlayerController : MonoBehaviour
     
     private IEnumerator Damage(int damage)
     {
-        if (animator.GetBool("IsDeath"))
+        if (animator.GetBool("IsDeath") || isAttacking)
             yield break;
-        
         yield return new WaitForSeconds(0.5f);
         HPCount -= damage;
         animator.SetTrigger("takeHit");
@@ -186,21 +191,6 @@ public class PlayerController : MonoBehaviour
             Destroy(gameObject);
             Debug.Log("YOU ARE DEAD");
         }
-    }
-
-    private void OnTriggerEnter2D(Collider2D other)
-    {
-        
-        if (other.CompareTag("Finish"))
-        {
-            Debug.Log("go to exit");
-            SceneManager.LoadScene("Level2");
-        }
-        // else if (other.CompareTag("Bottle"))
-        // {
-        //     Debug.Log("take health");
-        //     Destroy(other.gameObject);
-        // }
     }
 }
 
