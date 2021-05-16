@@ -65,7 +65,6 @@ public class MonsterController : MonoBehaviour
 
     private void Update()
     {
-        Debug.Log(attackZone.name);
         if (currentHealth > 0 && !takingDamage)
         {
             var start = map.GetPositionInTilemap(tilemap, transform.position);

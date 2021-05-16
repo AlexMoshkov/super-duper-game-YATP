@@ -53,14 +53,13 @@
   </PropertyGroup>
   <ItemGroup>
      <Compile Include="Assets\Scripts\MonsterController.cs" />
-     <Compile Include="Assets\Scripts\Character.cs" />
+     <Compile Include="Assets\Scripts\ExitScript.cs" />
      <Compile Include="Assets\Scripts\TilemapScript.cs" />
      <Compile Include="Assets\Scripts\FirstQuest.cs" />
      <Compile Include="Assets\Scripts\CellType.cs" />
      <Compile Include="Assets\Scripts\Map.cs" />
      <Compile Include="Assets\Scripts\Panel.cs" />
      <Compile Include="Assets\Scripts\CameraScipt.cs" />
-     <Compile Include="Assets\Scripts\AttackController.cs" />
      <Compile Include="Assets\Scripts\PlayerController.cs" />
      <Compile Include="Assets\Scripts\FireShoot.cs" />
  <Reference Include="UnityEngine">
