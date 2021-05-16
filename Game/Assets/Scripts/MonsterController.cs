@@ -68,11 +68,11 @@ public class MonsterController : MonoBehaviour
         Debug.Log(attackZone.name);
         if (currentHealth > 0 && !takingDamage)
         {
-            var start = gameObject.GetPositionInTilemap(tilemap);
+            var start = map.GetPositionInTilemap(tilemap, transform.position);
             Vector3 nextPos = FindPath(start, map.playerPosition);
             if (nextPos != new Vector3(99999, 99999, 0))
             {
-                nextPos = gameObject.GetWorldPositionFromTilemap(tilemap, nextPos);
+                nextPos = map.GetWorldPositionFromTilemap(tilemap, nextPos);
 
                 if (nextPos - transform.position != Vector3.zero)
                     animator.SetBool("IsRun", true);
@@ -181,6 +181,8 @@ public class MonsterController : MonoBehaviour
         {
             animator.SetBool("IsRun", false);
             animator.SetBool("IsDeath", true);
+
+            gameObject.GetComponent<BoxCollider2D>().enabled = false;
             
             //yield return new WaitForSeconds(5f);
             Destroy(gameObject, 5f);

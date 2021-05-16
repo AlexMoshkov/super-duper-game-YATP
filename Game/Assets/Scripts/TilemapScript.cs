@@ -21,7 +21,7 @@ public class TilemapScript : MonoBehaviour
 
     private void Update()
     {
-        map.playerPosition = player.GetPositionInTilemap(tilemap);
+        map.playerPosition = map.GetPositionInTilemap(tilemap, player.transform.position);
     }
 
     private CellType[,] GetMap()
@@ -35,6 +35,8 @@ public class TilemapScript : MonoBehaviour
             var tile = allTiles[x + y * bounds.size.x];
             if (tile != null && tile.name == "Barrel")
                 result[x, y] = CellType.Barrel;
+            else if (tile != null)
+                result[x, y] = CellType.Wall;
             else result[x, y] = CellType.Empty;
         }
         return result;

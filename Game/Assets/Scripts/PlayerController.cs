@@ -29,6 +29,11 @@ public class PlayerController : MonoBehaviour
     private bool isAttacking = false;
     private float timeLeft;
     
+    private Map map;
+    [SerializeField] private Tilemap tilemap;
+
+    [SerializeField] private GameObject HealthBottle;
+    
     void Awake()
     {
         HPCount = 30;
@@ -38,6 +43,8 @@ public class PlayerController : MonoBehaviour
         sprite = GetComponent<SpriteRenderer>();
         attackZone = GameObject.Find("Attack Zone");
         timeLeft = attackDelay;
+        
+        map = tilemap.GetComponent<TilemapScript>().map;
     }
     
     void Update()
@@ -118,10 +125,36 @@ public class PlayerController : MonoBehaviour
             animator.SetTrigger(triggerAttack);
             
             var list = new List<Collider2D>();
-            attackZone.GetComponent<BoxCollider2D>().OverlapCollider(new ContactFilter2D(), list);
+            var playerCollider = attackZone.GetComponent<BoxCollider2D>();
+            playerCollider.OverlapCollider(new ContactFilter2D(), list);
             foreach (var collider in list)
+            {
                 if (collider.tag == "Enemy")
                     collider.GetComponentInParent<MonsterController>().TakeDamage(attackDmg);
+                else if (collider.tag != "Player") 
+                {
+                    Debug.Log("AAAA");
+                    var x = (int) map.playerPosition.x + (sprite.flipX ? -1 : 1);
+                    var y = (int) map.playerPosition.y;
+                    if (map.map[x, y] == CellType.Barrel)
+                    {
+                        Debug.Log(x + " " + y);
+                        map.map[x, y] = CellType.Empty;
+
+                        // for (var xx = tilemap.origin.x; xx < tilemap.origin.x + tilemap.size.x; xx++)
+                        // for (var yy = tilemap.origin.y; yy < tilemap.origin.y + tilemap.size.y; yy++)
+                        // {
+                        //     if (tilemap.GetTile(new Vector3Int(xx ,yy, 0)) != null)
+                        //         Debug.Log(tilemap.GetTile(new Vector3Int(xx ,yy, 0)).name + " " + xx + " " + yy);
+                        // }
+                        
+
+                        tilemap.SetTile(tilemap.origin + new Vector3Int(x, y, 0), null);
+                        Instantiate(HealthBottle, map.GetWorldPositionFromTilemap(tilemap, new Vector2(x, y)),
+                            Quaternion.identity);
+                    }
+                }
+            }
         }
     }
 
@@ -157,11 +190,17 @@ public class PlayerController : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D other)
     {
-        Debug.Log("EXIT");
-        if (other.tag == "Finish")
+        
+        if (other.CompareTag("Finish"))
         {
+            Debug.Log("go to exit");
             SceneManager.LoadScene("Level2");
         }
+        // else if (other.CompareTag("Bottle"))
+        // {
+        //     Debug.Log("take health");
+        //     Destroy(other.gameObject);
+        // }
     }
 }
 
