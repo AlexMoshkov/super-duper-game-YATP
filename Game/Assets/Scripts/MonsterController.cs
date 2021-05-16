@@ -39,7 +39,7 @@ public class MonsterController : MonoBehaviour
         if (!isAttacking)
         {
             isAttacking = true;
-            timeLeft = 4f;
+            timeLeft = 1.5f;
             animator.SetTrigger("attack");
             
             var list = new List<Collider2D>();

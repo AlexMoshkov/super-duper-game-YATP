@@ -28,6 +28,7 @@ public class PlayerController : MonoBehaviour
 
     private bool isAttacking = false;
     private float timeLeft;
+    private AttackType attackType;
     
     private Map map;
     [SerializeField] private Tilemap tilemap;
@@ -36,6 +37,7 @@ public class PlayerController : MonoBehaviour
     
     void Awake()
     {
+        attackType = AttackType.NoAttack;
         HPCount = 30;
         manaBar.fillAmount = 1f;
         rigidBodyComponent = GetComponent<Rigidbody2D>();
@@ -59,26 +61,29 @@ public class PlayerController : MonoBehaviour
         HPBar.fillAmount = HPCount / 30;
         manaBar.fillAmount += speedManaRegeneration * Time.deltaTime;
     }
+
     private void Run()
     {
-        var up = Input.GetKey(KeyCode.UpArrow) ? 1 : 0;
-        var left = Input.GetKey(KeyCode.LeftArrow) ? -1 : 0;
-        var down = Input.GetKey(KeyCode.DownArrow) ? -1 : 0;
-        var right = Input.GetKey(KeyCode.RightArrow) ? 1 : 0;
-       
-        var moveVector = new Vector3(left + right, up + down, 0);
-        sprite.flipX = moveVector.x < 0;
-        if (moveVector.x != 0)
-            attackZone.transform.localScale = new Vector3(moveVector.x, 1, 1);
-        
-        animator.SetBool("IsRun", true);
-        transform.position += moveVector * acceleration * Time.deltaTime;
-        
+        if (!isAttacking)
+        {
+            var up = Input.GetKey(KeyCode.UpArrow) ? 1 : 0;
+            var left = Input.GetKey(KeyCode.LeftArrow) ? -1 : 0;
+            var down = Input.GetKey(KeyCode.DownArrow) ? -1 : 0;
+            var right = Input.GetKey(KeyCode.RightArrow) ? 1 : 0;
+
+            var moveVector = new Vector3(left + right, up + down, 0);
+            sprite.flipX = moveVector.x < 0;
+            if (moveVector.x != 0)
+                attackZone.transform.localScale = new Vector3(moveVector.x, 1, 1);
+
+            animator.SetBool("IsRun", true);
+            transform.position += moveVector * acceleration * Time.deltaTime;
+        }
     }
 
     private void MakeAttack()
     {
-        var attackType = Input.GetKeyDown(KeyCode.A) ? AttackType.NormalAttack : AttackType.NoAttack;
+        attackType = Input.GetKeyDown(KeyCode.A) ? AttackType.NormalAttack : AttackType.NoAttack;
         if (attackType == AttackType.NoAttack)
             attackType = Input.GetKeyDown(KeyCode.W) ? AttackType.HeavyAttack : AttackType.NoAttack;
         if (attackType == AttackType.NoAttack)
@@ -104,19 +109,19 @@ public class PlayerController : MonoBehaviour
                     attackDmg = 5;
                     break;
                 case AttackType.HeavyAttack:
-                    manaCost = 0.1f;
+                    manaCost = 0.25f;
                     if (manaBar.fillAmount - manaCost < 0)
                         break;
-                    timeLeft = 2f;
+                    timeLeft = 0.8f;
                     triggerAttack = "heavy";
                     attackDmg = 8;
                     manaBar.fillAmount -= manaCost;
                     break;
                 case AttackType.SpecialAttack:
-                    manaCost = 0.3f;
+                    manaCost = 0.6f;
                     if (manaBar.fillAmount - manaCost < 0)
                         break;
-                    timeLeft = 5f;
+                    timeLeft = 0.8f;
                     triggerAttack = "special";
                     Quaternion rotate = Quaternion.identity;
                     if (sprite.flipX)
@@ -171,7 +176,7 @@ public class PlayerController : MonoBehaviour
     
     private IEnumerator Damage(int damage)
     {
-        if (animator.GetBool("IsDeath") || isAttacking)
+        if (animator.GetBool("IsDeath"))
             yield break;
         yield return new WaitForSeconds(0.5f);
         HPCount -= damage;
