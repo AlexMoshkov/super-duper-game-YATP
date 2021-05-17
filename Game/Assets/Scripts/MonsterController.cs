@@ -11,8 +11,8 @@ public class MonsterController : MonoBehaviour
     public Tilemap tilemap;
     private Map map;
     public int currentHealth;
-    [SerializeField]
-    private float acceleration = 1.5f;
+    [SerializeField] private float acceleration = 1.5f;
+    [SerializeField] public int vision;
 
     [SerializeField]
     public int maxHealth;
@@ -153,7 +153,7 @@ public class MonsterController : MonoBehaviour
             partItem = track[partItem];
         }
 
-        if (result.Count >= 10)
+        if (result.Count >= vision)
             return new Vector2(99999, 99999);
 
         result.Reverse();

@@ -12,7 +12,7 @@ public class CameraScipt : MonoBehaviour
     }
 
     // Update is called once per frame
-    void FixedUpdate()
+    void Update()
     {
         // var stop = false;
         // var list = new List<Collider2D>();
@@ -25,9 +25,12 @@ public class CameraScipt : MonoBehaviour
         //transform.position = new Vector3(player.transform.position.x, 1, -10);
         if (transform.position.x + 2 < player.transform.position.x)
         {
-            transform.position =
-                Vector3.MoveTowards(new Vector3(transform.position.x, 1, -10),
-                    new Vector3(player.transform.position.x, 1,-10), 2f * Time.deltaTime);
+            transform.position += Vector3.right * 2f * Time.deltaTime;
+        }
+
+        if (transform.position.x - 2 > player.transform.position.x)
+        {
+            transform.position += Vector3.left * 2f * Time.deltaTime;
         }
         
     }

@@ -6,6 +6,8 @@ TagManager:
   tags:
   - Enemy
   - Bottle
+  - Barrel
+  - Camera
   layers:
   - Default
   - TransparentFX

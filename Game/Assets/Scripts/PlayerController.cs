@@ -51,6 +51,7 @@ public class PlayerController : MonoBehaviour
     
     void Update()
     {
+        //if (Time.timeScale == 0) return;
         if (!animator.GetBool("IsDeath"))
         {
             animator.SetBool("IsRun", false);
@@ -58,6 +59,7 @@ public class PlayerController : MonoBehaviour
             if (Input.GetButton("Vertical") || Input.GetButton("Horizontal"))
                 Run();
         }
+
         HPBar.fillAmount = HPCount / 30;
         manaBar.fillAmount += speedManaRegeneration * Time.deltaTime;
     }
@@ -135,35 +137,18 @@ public class PlayerController : MonoBehaviour
                 return;
             animator.SetTrigger(triggerAttack);
             
-            var list = new List<Collider2D>();
+            var colliders = new List<Collider2D>();
             var playerCollider = attackZone.GetComponent<BoxCollider2D>();
-            playerCollider.OverlapCollider(new ContactFilter2D(), list);
-            foreach (var collider in list)
+            playerCollider.OverlapCollider(new ContactFilter2D(), colliders);
+            foreach (var collider in colliders)
             {
-                if (collider.tag == "Enemy")
+                if (collider.CompareTag("Enemy"))
                     collider.GetComponentInParent<MonsterController>().TakeDamage(attackDmg);
-                else if (collider.tag != "Player") 
+                else if (collider.CompareTag("Barrel")) 
                 {
-                    Debug.Log("AAAA");
-                    var x = (int) map.playerPosition.x + (sprite.flipX ? -1 : 1);
-                    var y = (int) map.playerPosition.y;
-                    if (map.map[x, y] == CellType.Barrel)
-                    {
-                        Debug.Log(x + " " + y);
-                        map.map[x, y] = CellType.Empty;
-
-                        // for (var xx = tilemap.origin.x; xx < tilemap.origin.x + tilemap.size.x; xx++)
-                        // for (var yy = tilemap.origin.y; yy < tilemap.origin.y + tilemap.size.y; yy++)
-                        // {
-                        //     if (tilemap.GetTile(new Vector3Int(xx ,yy, 0)) != null)
-                        //         Debug.Log(tilemap.GetTile(new Vector3Int(xx ,yy, 0)).name + " " + xx + " " + yy);
-                        // }
-                        
-
-                        tilemap.SetTile(tilemap.origin + new Vector3Int(x, y, 0), null);
-                        Instantiate(HealthBottle, map.GetWorldPositionFromTilemap(tilemap, new Vector2(x, y)),
-                            Quaternion.identity);
-                    }
+                    Destroy(collider.gameObject, 0.6f);
+                    var positionInTilemap = map.GetPositionInTilemap(tilemap, collider.transform.position);
+                    map.map[(int) positionInTilemap.x, (int) positionInTilemap.y] = CellType.Empty;
                 }
             }
         }
@@ -171,6 +156,7 @@ public class PlayerController : MonoBehaviour
 
     public void TakeDamage(int damage)
     {
+        //TODO:переписать эту тупость :)
         StartCoroutine(Damage(damage));
     }
     
