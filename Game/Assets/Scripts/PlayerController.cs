@@ -12,15 +12,14 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private float attackDelay = 0.5f;
     [SerializeField] private float acceleration = 2f;
     [SerializeField] private float speedManaRegeneration = 0.5f;
-
+    [SerializeField] private Tilemap tilemap;
     [SerializeField] private Transform shootPosition;
     [SerializeField] private GameObject fireBall;
     [SerializeField] private Image manaBar;
     
-    private float HPCount;
+    public float HPCount;
     private float manaCost = 0.3f;
     
-    public Rigidbody2D rigidBodyComponent;
     
     private Animator animator;
     private SpriteRenderer sprite;
@@ -31,21 +30,17 @@ public class PlayerController : MonoBehaviour
     private AttackType attackType;
     
     private Map map;
-    [SerializeField] private Tilemap tilemap;
-
-    [SerializeField] private GameObject HealthBottle;
     
+
     void Awake()
     {
         attackType = AttackType.NoAttack;
         HPCount = 30;
         manaBar.fillAmount = 1f;
-        rigidBodyComponent = GetComponent<Rigidbody2D>();
         animator = GetComponent<Animator>();
         sprite = GetComponent<SpriteRenderer>();
         attackZone = GameObject.Find("Attack Zone");
         timeLeft = attackDelay;
-        
         map = tilemap.GetComponent<TilemapScript>().map;
     }
     
@@ -87,9 +82,9 @@ public class PlayerController : MonoBehaviour
     {
         attackType = Input.GetKeyDown(KeyCode.A) ? AttackType.NormalAttack : AttackType.NoAttack;
         if (attackType == AttackType.NoAttack)
-            attackType = Input.GetKeyDown(KeyCode.W) ? AttackType.HeavyAttack : AttackType.NoAttack;
+            attackType = Input.GetKeyDown(KeyCode.S) ? AttackType.HeavyAttack : AttackType.NoAttack;
         if (attackType == AttackType.NoAttack)
-            attackType = Input.GetKeyDown(KeyCode.Q) ? AttackType.SpecialAttack : AttackType.NoAttack;
+            attackType = Input.GetKeyDown(KeyCode.D) ? AttackType.SpecialAttack : AttackType.NoAttack;
 
         if (isAttacking)
             timeLeft -= Time.deltaTime;
@@ -111,7 +106,7 @@ public class PlayerController : MonoBehaviour
                     attackDmg = 5;
                     break;
                 case AttackType.HeavyAttack:
-                    manaCost = 0.25f;
+                    manaCost = 0.35f;
                     if (manaBar.fillAmount - manaCost < 0)
                         break;
                     timeLeft = 0.8f;

@@ -7,7 +7,7 @@ public class Panel : MonoBehaviour
 {
     public void PlayPressed()
     {
-        SceneManager.LoadScene("SampleScene");
+        SceneManager.LoadScene("Level1");
     }
     public void ExitPressed()
     {

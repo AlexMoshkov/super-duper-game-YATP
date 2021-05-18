@@ -19,7 +19,6 @@ public class ExitScript : MonoBehaviour
             if (collider.CompareTag("Player"))
             {
                 Debug.Log("go to exit");
-                SceneManager.UnloadSceneAsync("SampleScene");
                 SceneManager.LoadScene(nextLevel);
             }
         }

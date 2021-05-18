@@ -25,13 +25,29 @@ public class CameraScipt : MonoBehaviour
         //transform.position = new Vector3(player.transform.position.x, 1, -10);
         if (transform.position.x + 2 < player.transform.position.x)
         {
-            transform.position += Vector3.right * 2f * Time.deltaTime;
+            transform.position = Vector3.MoveTowards(transform.position,
+                new Vector3(player.transform.position.x, transform.position.y, -10), 2f * Time.deltaTime);
+            //transform.position += Vector3.right * 2f * Time.deltaTime;
         }
 
         if (transform.position.x - 2 > player.transform.position.x)
         {
-            transform.position += Vector3.left * 2f * Time.deltaTime;
+            transform.position = Vector3.MoveTowards(transform.position,
+                new Vector3(player.transform.position.x, transform.position.y, -10), 2f * Time.deltaTime);
+            //transform.position += Vector3.left * 2f * Time.deltaTime;
         }
         
+        if (transform.position.y - 2.5 > player.transform.position.y)
+        {
+            transform.position = Vector3.MoveTowards(transform.position,
+                new Vector3(player.transform.position.x, -8f, -10), 2f * Time.deltaTime);
+            transform.position += Vector3.down * 2f * Time.deltaTime;
+        }
+        
+        if (transform.position.y - 1.5 < player.transform.position.y)
+        {
+            transform.position = Vector3.MoveTowards(transform.position,
+                new Vector3(player.transform.position.x, 0.8f, -10), 2f * Time.deltaTime);
+        }
     }
 }

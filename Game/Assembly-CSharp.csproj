@@ -59,12 +59,15 @@
      <Compile Include="Assets\Scripts\FirstQuest.cs" />
      <Compile Include="Assets\Scripts\CellType.cs" />
      <Compile Include="Assets\Scripts\Map.cs" />
+     <Compile Include="Assets\Scripts\HealthBottle.cs" />
      <Compile Include="Assets\Scripts\DialogsScript.cs" />
      <Compile Include="Assets\Scripts\Panel.cs" />
      <Compile Include="Assets\Scripts\CameraScipt.cs" />
      <Compile Include="Assets\Scripts\PlayerController.cs" />
      <Compile Include="Assets\Scripts\FireShoot.cs" />
      <Compile Include="Assets\Scripts\DialogTrigger.cs" />
+     <Compile Include="Assets\Scripts\ClosedArea.cs" />
+     <Compile Include="Assets\Scripts\TrainingController.cs" />
  <Reference Include="UnityEngine">
  <HintPath>C:/Program Files/Unity/Hub/Editor/2020.3.5f1/Editor/Data/Managed/UnityEngine/UnityEngine.dll</HintPath>
  </Reference>

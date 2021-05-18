@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Net.Mime;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 public class DialogsScript : MonoBehaviour
@@ -14,8 +15,11 @@ public class DialogsScript : MonoBehaviour
     [SerializeField] private string[] dialogs;
 
     [SerializeField] private GameObject kingSpirit;
+    [SerializeField] private int level;
+    [SerializeField] private GameObject goblins;
+    [SerializeField] private TrainingController training;
     
-    private int index;
+    public int index;
     private int currentDialog;
     public GameObject[] objects;
     void Start()
@@ -30,6 +34,13 @@ public class DialogsScript : MonoBehaviour
     {
         if (!canvas.enabled) return;
         Time.timeScale = 0;
+        if (index == 7 && level == 2)
+        {
+            foreach (var obj in objects)
+                obj.SetActive(true);
+        }
+        
+
         UpdateText(index);
         if (Input.anyKeyDown)
         {
@@ -42,7 +53,7 @@ public class DialogsScript : MonoBehaviour
     {
         var text = dialogs[indx];
         var specialSymbol = text[0];
-
+        
         switch (specialSymbol)
         {
             case 'P':
@@ -50,7 +61,12 @@ public class DialogsScript : MonoBehaviour
                 textBox.text = text.Substring(1);
                 break;
             case 'G':
-                goblin.enabled = true;
+                if (level == 2)
+                {
+                    goblins.SetActive(true);
+                }
+                else
+                    goblin.enabled = true;
                 textBox.alignment = TextAnchor.UpperRight;
                 textBox.text = text.Substring(1);
                 break;
@@ -59,17 +75,43 @@ public class DialogsScript : MonoBehaviour
                 textBox.alignment = TextAnchor.UpperRight;
                 textBox.text = text.Substring(1);
                 break;
-            case 'Q':
-                kingSpirit.GetComponent<SpriteRenderer>().enabled = false;
+            case 'S':
                 textBox.alignment = TextAnchor.UpperRight;
                 textBox.text = text.Substring(1);
                 break;
             case '_':
-                if (currentDialog == 1)
+                if (level == 1 && index == 12)
                 {
+                    Debug.Log("vision");
                     objects[0].GetComponent<MonsterController>().vision = 15;
                     goblin.enabled = false;
                 }
+                if (level == 2)
+                {
+                    goblins.SetActive(false);
+                }
+
+                if (index == 4 && level == 1) //open arrows
+                {
+                    StartCoroutine(training.ChangeSprite(training.arrows));
+                }
+                
+                if (index == 12 && level == 1) //open A
+                {
+                    StartCoroutine(training.ChangeSprite(training.buttonA));
+                }
+                
+                if (index == 13 && level == 1) //open S
+                {
+                    StartCoroutine(training.ChangeSprite(training.buttonS));
+                }
+                
+                if (index == 3 && level == 2) //open W
+                {
+                    StartCoroutine(training.ChangeSprite(training.buttonD));
+                }
+
+
                 index++;
                 currentDialog++;
                 Time.timeScale = 1;
@@ -77,4 +119,5 @@ public class DialogsScript : MonoBehaviour
                 break;
         }
     }
+    
 }
