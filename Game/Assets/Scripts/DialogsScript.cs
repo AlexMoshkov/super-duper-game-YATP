@@ -34,7 +34,7 @@ public class DialogsScript : MonoBehaviour
     {
         if (!canvas.enabled) return;
         Time.timeScale = 0;
-        if (index == 7 && level == 2)
+        if (index == 8 && level == 2)
         {
             foreach (var obj in objects)
                 obj.SetActive(true);
