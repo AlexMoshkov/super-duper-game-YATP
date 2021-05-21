@@ -1,22 +1,22 @@
-﻿using System;
+﻿ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Security.Cryptography;
 using UnityEngine;
 using UnityEngine.Rendering;
-using UnityEngine.Tilemaps;
+ using UnityEngine.Serialization;
+ using UnityEngine.Tilemaps;
+using Random = System.Random;
 
 public class MonsterController : MonoBehaviour
 {
     public Tilemap tilemap;
     private Map map;
-    public int currentHealth;
+    private int currentHealth;
     [SerializeField] private float acceleration = 1.5f;
     [SerializeField] public int vision;
-
-    [SerializeField]
-    public int maxHealth;
-
+    [SerializeField] private bool isDropHealthBottle;
+    [SerializeField] public int maxHealth;
     [SerializeField] private GameObject attackZone;
 
     private int attackDamage = 5;
@@ -28,6 +28,8 @@ public class MonsterController : MonoBehaviour
     private bool isAttacking;
     private float timeLeft;
     private bool takingDamage = false;
+    private Random random = new Random();
+    
     private void Attack()
     {
         if (isAttacking)
@@ -70,21 +72,17 @@ public class MonsterController : MonoBehaviour
             if (nextPos != new Vector3(99999, 99999, 0))
             {
                 nextPos = map.GetWorldPositionFromTilemap(tilemap, nextPos);
-
+                nextPos.z = -1.5f;
                 if (nextPos - transform.position != Vector3.zero)
                     animator.SetBool("IsRun", true);
                 else
                     animator.SetBool("IsRun", false);
 
                 if (nextPos.x - transform.position.x != 0)
-                {
                     sprite.flipX = (nextPos.x - transform.position.x) < 0;
-                }
 
                 if (!animator.GetBool("IsRun"))
-                {
                     Attack();
-                }
 
                 transform.position = Vector3.MoveTowards(transform.position, nextPos, acceleration * Time.deltaTime);
             }
@@ -117,9 +115,7 @@ public class MonsterController : MonoBehaviour
                 var newPoint = new Vector2(point.x + dx, point.y + dy);
                 if (visited.Contains(newPoint) || !map.Contains(newPoint) ||
                     map.map[(int) newPoint.x, (int) newPoint.y] != CellType.Empty)
-                {
                     continue;
-                }
 
                 track[newPoint] = point;
                 visited.Add(newPoint);
@@ -135,13 +131,9 @@ public class MonsterController : MonoBehaviour
         var partItem = end;
 
         if (track.ContainsKey(end + new Vector2(1, 0)))
-        {
             partItem = end + new Vector2(1, 0);
-        }
         else
-        {
             partItem = end + new Vector2(-1, 0);
-        }
 
         var result = new List<Vector2>();
 
@@ -180,10 +172,15 @@ public class MonsterController : MonoBehaviour
             animator.SetBool("IsDeath", true);
 
             gameObject.GetComponent<BoxCollider2D>().enabled = false;
-            
-            //yield return new WaitForSeconds(5f);
-            Destroy(gameObject, 5f);
+            yield return new WaitForSeconds(1.5f);
+            SpawnHealthBottle();
         }
         takingDamage = false;
+    }
+
+    private void SpawnHealthBottle()
+    {
+        if (isDropHealthBottle)
+            Instantiate(GameObject.Find("Health Bottle"), transform.position, transform.rotation);
     }
 }

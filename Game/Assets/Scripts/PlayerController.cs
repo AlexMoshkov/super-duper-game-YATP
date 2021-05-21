@@ -46,7 +46,7 @@ public class PlayerController : MonoBehaviour
     
     void Update()
     {
-        //if (Time.timeScale == 0) return;
+        if (Time.timeScale == 0) return;
         if (!animator.GetBool("IsDeath"))
         {
             animator.SetBool("IsRun", false);
