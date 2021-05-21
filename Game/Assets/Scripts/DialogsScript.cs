@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Net.Mime;
+using Unity.Collections;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
@@ -95,6 +96,8 @@ public class DialogsScript : MonoBehaviour
                     goblins.SetActive(false);
                 }
 
+                bonn.enabled = false;
+
                 if (index == 4 && level == 1) //open arrows
                 {
                     StartCoroutine(training.ChangeSprite(training.arrows));
@@ -115,6 +118,10 @@ public class DialogsScript : MonoBehaviour
                     StartCoroutine(training.ChangeSprite(training.buttonD));
                 }
 
+                if (index == 11 && level == 3)
+                {
+                    kingSpirit.GetComponent<King>().enabled = true;
+                }
 
                 index++;
                 currentDialog++;
@@ -122,6 +129,14 @@ public class DialogsScript : MonoBehaviour
                 canvas.enabled = false;
                 break;
         }
+    }
+
+    private IEnumerator KingRun()
+    {
+        kingSpirit.GetComponent<SpriteRenderer>().flipX = false;
+        kingSpirit.transform.position = Vector3.MoveTowards(kingSpirit.transform.position,
+            kingSpirit.transform.position + new Vector3(10, 0, 0), 2.5f * Time.deltaTime);
+        yield return new WaitForSeconds(10f);
     }
     
 }
