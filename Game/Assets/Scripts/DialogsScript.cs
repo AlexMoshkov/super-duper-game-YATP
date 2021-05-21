@@ -17,6 +17,7 @@ public class DialogsScript : MonoBehaviour
     [SerializeField] private GameObject kingSpirit;
     [SerializeField] private int level;
     [SerializeField] private GameObject goblins;
+    [SerializeField] private Image bonn;
     [SerializeField] private TrainingController training;
     
     public int index;
@@ -62,9 +63,7 @@ public class DialogsScript : MonoBehaviour
                 break;
             case 'G':
                 if (level == 2)
-                {
                     goblins.SetActive(true);
-                }
                 else
                     goblin.enabled = true;
                 textBox.alignment = TextAnchor.UpperRight;
@@ -72,6 +71,11 @@ public class DialogsScript : MonoBehaviour
                 break;
             case 'K':
                 kingSpirit.GetComponent<SpriteRenderer>().enabled = true;
+                textBox.alignment = TextAnchor.UpperRight;
+                textBox.text = text.Substring(1);
+                break;
+            case 'B':
+                bonn.enabled = true;
                 textBox.alignment = TextAnchor.UpperRight;
                 textBox.text = text.Substring(1);
                 break;

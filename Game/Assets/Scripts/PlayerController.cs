@@ -137,6 +137,7 @@ public class PlayerController : MonoBehaviour
             playerCollider.OverlapCollider(new ContactFilter2D(), colliders);
             foreach (var collider in colliders)
             {
+                Debug.Log(collider.tag);
                 if (collider.CompareTag("Enemy"))
                     collider.GetComponentInParent<MonsterController>().TakeDamage(attackDmg);
                 else if (collider.CompareTag("Barrel")) 

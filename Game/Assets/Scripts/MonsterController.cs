@@ -11,7 +11,7 @@ public class MonsterController : MonoBehaviour
 {
     public Tilemap tilemap;
     private Map map;
-    private int currentHealth;
+    public int currentHealth;
     [SerializeField] private float acceleration = 1.5f;
     [SerializeField] public int vision;
     [SerializeField] private bool isDropHealthBottle;

@@ -8,7 +8,8 @@ public class FireShoot : MonoBehaviour
 
     private void Start()
     {
-        StartCoroutine(Delete());
+        Destroy(gameObject, 3f);
+        //StartCoroutine(Delete());
     }
 
     private void Update()
@@ -28,7 +29,7 @@ public class FireShoot : MonoBehaviour
     }
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        if (collision.tag == "Enemy")
+        if (collision.tag == "Enemy" && collision.GetComponentInParent<MonsterController>().currentHealth >= 0)
         {
             collision.GetComponentInParent<MonsterController>().TakeDamage(11);
             Destroy(gameObject);
