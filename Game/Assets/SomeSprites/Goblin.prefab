@@ -104,7 +104,7 @@ MonoBehaviour:
   tilemap: {fileID: 0}
   acceleration: 1.5
   vision: 0
-  IsDropHealthBottle: 0
+  isDropHealthBottle: 1
   maxHealth: 15
   attackZone: {fileID: 6234746015858952453}
 --- !u!95 &6234746014586183996

@@ -1,12 +1,11 @@
-﻿ using System;
+﻿using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Security.Cryptography;
 using UnityEngine;
 using UnityEngine.Rendering;
- using UnityEngine.Serialization;
- using UnityEngine.Tilemaps;
-using Random = System.Random;
+using UnityEngine.Serialization;
+using UnityEngine.Tilemaps;
 
 public class MonsterController : MonoBehaviour
 {
@@ -28,8 +27,7 @@ public class MonsterController : MonoBehaviour
     private bool isAttacking;
     private float timeLeft;
     private bool takingDamage = false;
-    private Random random = new Random();
-    
+
     private void Attack()
     {
         if (isAttacking)
@@ -181,6 +179,8 @@ public class MonsterController : MonoBehaviour
     private void SpawnHealthBottle()
     {
         if (isDropHealthBottle)
-            Instantiate(GameObject.Find("Health Bottle"), transform.position, transform.rotation);
+            Instantiate(GameObject.Find("Health Bottle"), 
+                new Vector3(transform.position.x, transform.position.y, -2),
+                transform.rotation);
     }
 }

@@ -207,6 +207,11 @@ PrefabInstance:
       propertyPath: tilemap
       value: 
       objectReference: {fileID: 1259056060}
+    - target: {fileID: 6234746014586183997, guid: cdebad0f13fc4f940b5447cb9e4a6c6a,
+        type: 3}
+      propertyPath: isDropHealthBottle
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: cdebad0f13fc4f940b5447cb9e4a6c6a, type: 3}
 --- !u!1 &245869780 stripped
@@ -354,6 +359,11 @@ PrefabInstance:
         type: 3}
       propertyPath: healthBottle
       value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 6234746014586183997, guid: cdebad0f13fc4f940b5447cb9e4a6c6a,
+        type: 3}
+      propertyPath: isDropHealthBottle
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 6234746014586183999, guid: cdebad0f13fc4f940b5447cb9e4a6c6a,
         type: 3}
@@ -915,6 +925,11 @@ PrefabInstance:
         type: 3}
       propertyPath: healthBottle
       value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 6234746014586183997, guid: cdebad0f13fc4f940b5447cb9e4a6c6a,
+        type: 3}
+      propertyPath: isDropHealthBottle
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 6234746014586183999, guid: cdebad0f13fc4f940b5447cb9e4a6c6a,
         type: 3}
@@ -25468,7 +25483,7 @@ PrefabInstance:
     - target: {fileID: 3995006576329390641, guid: 9bb05dd1e20028143bfec474670faee8,
         type: 3}
       propertyPath: m_LocalPosition.z
-      value: 0
+      value: -2
       objectReference: {fileID: 0}
     - target: {fileID: 3995006576329390641, guid: 9bb05dd1e20028143bfec474670faee8,
         type: 3}
