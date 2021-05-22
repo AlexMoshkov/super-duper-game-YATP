@@ -92,11 +92,9 @@ public class DialogsScript : MonoBehaviour
                     goblin.enabled = false;
                 }
                 if (level == 2)
-                {
                     goblins.SetActive(false);
-                }
-
-                bonn.enabled = false;
+                if (level == 3)
+                    bonn.enabled = false;
 
                 if (index == 4 && level == 1) //open arrows
                 {
