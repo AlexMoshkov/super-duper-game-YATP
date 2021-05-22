@@ -31,7 +31,7 @@ public class FireFloor : MonoBehaviour
 
     private void Hit()
     {
-        Debug.Log("READY TO HIT");
+        //Debug.Log("READY TO HIT");
         animator.SetTrigger("attack");
         var colliders = new List<Collider2D>();
         fireCollider.OverlapCollider(new ContactFilter2D(), colliders);
