@@ -17,8 +17,9 @@ public class MonsterController : MonoBehaviour
     [SerializeField] private bool isDropHealthBottle;
     [SerializeField] public int maxHealth;
     [SerializeField] private GameObject attackZone;
+    [SerializeField] private bool isDestroyed; 
 
-    private int attackDamage = 5;
+    [SerializeField] private int attackDamage = 3;
     
     private SpriteRenderer sprite;
     private Animator animator;
@@ -172,6 +173,8 @@ public class MonsterController : MonoBehaviour
             gameObject.GetComponent<BoxCollider2D>().enabled = false;
             yield return new WaitForSeconds(1.5f);
             SpawnHealthBottle();
+            if (isDestroyed)
+                Destroy(gameObject, 4f);
         }
         takingDamage = false;
     }
