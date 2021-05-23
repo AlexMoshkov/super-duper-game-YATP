@@ -119,7 +119,7 @@ public class BossController : MonoBehaviour
 
         if (deathCount == goblins.Length)
         {
-            animator.SetTrigger("TakeHitFirstStage");
+            animator.SetTrigger("finalFirstStage");
             isFinalStage = true;
         }
     }
