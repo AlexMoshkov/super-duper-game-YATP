@@ -6,10 +6,11 @@ public class King : MonoBehaviour
 {
     // Start is called before the first frame update
     private Vector3 target;
+    [SerializeField] private SpriteRenderer sprite; 
     void Start()
     {
         target = transform.position + new Vector3(12, 0, 0);
-        GetComponent<SpriteRenderer>().flipX = false;
+        sprite.flipX = false;
     }
 
     // Update is called once per frame
@@ -18,8 +19,8 @@ public class King : MonoBehaviour
         transform.position = Vector3.MoveTowards(transform.position, target, 2.3f * Time.deltaTime);
         if (transform.position == target)
         {
-            GetComponent<SpriteRenderer>().flipX = true;
-            GetComponent<King>().enabled = false;
+            sprite.flipX = true;
+            enabled = false;
         }
     }
 }

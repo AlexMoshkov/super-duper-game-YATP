@@ -8,6 +8,7 @@ using UnityEngine.Tilemaps;
 
 public class TilemapScript : MonoBehaviour
 {
+    [SerializeField] private GameObject[] monsters;
     public Tilemap tilemap;
     public Map map;
     private GameObject player;
@@ -16,7 +17,7 @@ public class TilemapScript : MonoBehaviour
         tilemap = GetComponent<Tilemap>();
         player = GameObject.Find("Player");
         var cellmap = GetMap();
-        map = new Map(cellmap, GetPlayerPosition());
+        map = new Map(cellmap, tilemap, player.transform.position);
     }
 
     private void Update()
@@ -33,24 +34,10 @@ public class TilemapScript : MonoBehaviour
         for (var y = 0; y < bounds.size.y; y++)
         {
             var tile = allTiles[x + y * bounds.size.x];
-            if (tile != null && tile.name == "Barrel")
-                result[x, y] = CellType.Barrel;
-            else if (tile != null)
-                result[x, y] = CellType.Wall;
+            if (tile != null)
+                result[x, y] = CellType.Occupied;
             else result[x, y] = CellType.Empty;
         }
         return result;
-    }
-
-    private Vector2 GetPlayerPosition()
-    {
-        var x = player.transform.position.x;
-        var y = player.transform.position.y;
-        var position = tilemap.GetCellCenterLocal(new Vector3Int((int) Math.Floor(x), (int) Math.Floor(y), 0));
-        position.x -= -10;
-        position.y -= -2;
-        position.x = (int)Math.Floor(position.x);
-        position.y = (int)Math.Floor(position.y);
-        return new Vector2(position.x, position.y);
     }
 }

@@ -86,6 +86,7 @@ public class BossController : MonoBehaviour
             {
                 animator.SetTrigger("TakeHit");
                 Debug.Log("Take Hit Boss");
+                goblin.GetComponent<MonsterController>().SpawnHealthBottle();
                 goblin.SetActive(false);
                 deathCount++;
             }
@@ -114,7 +115,6 @@ public class BossController : MonoBehaviour
             goblins[9].SetActive(true);
             goblins[10].SetActive(true);
             goblins[11].SetActive(true);
-            goblins[12].SetActive(true);
         }
 
         if (deathCount == goblins.Length)

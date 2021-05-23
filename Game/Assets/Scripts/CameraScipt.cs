@@ -6,6 +6,9 @@ public class CameraScipt : MonoBehaviour
 {
     // Start is called before the first frame update
     private GameObject player;
+    private float acceleration = 2f;
+    private float downBorder = -8f;
+    private float upBorder = 0.8f;
     void Start()
     {
         player = GameObject.Find("Player");
@@ -14,40 +17,28 @@ public class CameraScipt : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        // var stop = false;
-        // var list = new List<Collider2D>();
-        // GetComponent<BoxCollider2D>().OverlapCollider(new ContactFilter2D(), list);
-        // foreach (var collider in list)
-        // {
-        //     if (collider.tag == "Enemy")
-        //         stop = true;
-        // }
-        //transform.position = new Vector3(player.transform.position.x, 1, -10);
         if (transform.position.x + 2 < player.transform.position.x)
         {
             transform.position = Vector3.MoveTowards(transform.position,
-                new Vector3(player.transform.position.x, transform.position.y, -10), 2f * Time.deltaTime);
-            //transform.position += Vector3.right * 2f * Time.deltaTime;
+                new Vector3(player.transform.position.x, transform.position.y, -10), acceleration * Time.deltaTime);
         }
 
         if (transform.position.x - 2 > player.transform.position.x)
         {
             transform.position = Vector3.MoveTowards(transform.position,
-                new Vector3(player.transform.position.x, transform.position.y, -10), 2f * Time.deltaTime);
-            //transform.position += Vector3.left * 2f * Time.deltaTime;
+                new Vector3(player.transform.position.x, transform.position.y, -10), acceleration * Time.deltaTime);
         }
         
         if (transform.position.y - 2.5 > player.transform.position.y)
         {
             transform.position = Vector3.MoveTowards(transform.position,
-                new Vector3(player.transform.position.x, -8f, -10), 2f * Time.deltaTime);
-            transform.position += Vector3.down * 2f * Time.deltaTime;
+                new Vector3(player.transform.position.x, downBorder, -10), acceleration * Time.deltaTime);
         }
         
         if (transform.position.y - 1.5 < player.transform.position.y)
         {
             transform.position = Vector3.MoveTowards(transform.position,
-                new Vector3(player.transform.position.x, 0.8f, -10), 2f * Time.deltaTime);
+                new Vector3(player.transform.position.x, upBorder, -10), acceleration * Time.deltaTime);
         }
     }
 }

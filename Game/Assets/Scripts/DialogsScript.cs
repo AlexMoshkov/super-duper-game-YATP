@@ -36,22 +36,15 @@ public class DialogsScript : MonoBehaviour
     {
         if (!canvas.enabled) return;
         Time.timeScale = 0;
-        if (index == 8 && level == 2)
-        {
-            foreach (var obj in objects)
-                obj.SetActive(true);
-        }
-        
-
-        UpdateText(index);
+        GetNextEvent(index);
         if (Input.anyKeyDown)
         {
-            UpdateText(++index);
+            GetNextEvent(++index);
             Debug.Log(index);
         }
     }
 
-    private void UpdateText(int indx)
+    private void GetNextEvent(int indx)
     {
         var text = dialogs[indx];
         var specialSymbol = text[0];
@@ -67,6 +60,11 @@ public class DialogsScript : MonoBehaviour
                     goblins.SetActive(true);
                 else
                     goblin.enabled = true;
+                if (index == 8 && level == 2)
+                {
+                    foreach (var obj in objects)
+                        obj.SetActive(true);
+                }
                 textBox.alignment = TextAnchor.UpperRight;
                 textBox.text = text.Substring(1);
                 break;

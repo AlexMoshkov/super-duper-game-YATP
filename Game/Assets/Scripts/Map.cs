@@ -7,12 +7,12 @@ using UnityEngine.Tilemaps;
 public class Map
 {
     public readonly CellType[,] map;
-    public Vector2 playerPosition;
+    public Vector2Int playerPosition;
 
-    public Map(CellType[,] map, Vector2 playerPos)
+    public Map(CellType[,] map, Tilemap tilemap, Vector3 playerPos)
     {
         this.map = map;
-        playerPosition = playerPos;
+        playerPosition = GetPositionInTilemap(tilemap, playerPos);
     }
 
     public bool Contains(Vector2 point)
@@ -21,7 +21,7 @@ public class Map
                 point.y >= 0 && point.y < map.GetLength(1);
     }
 
-    public Vector2 GetPositionInTilemap(Tilemap tilemap, Vector3 position)
+    public Vector2Int GetPositionInTilemap(Tilemap tilemap, Vector3 position)
     {
         var x = position.x;
         var y = position.y;
@@ -29,7 +29,7 @@ public class Map
         posInTilemap -= tilemap.origin;
         posInTilemap.x = (int)Math.Floor(posInTilemap.x);
         posInTilemap.y = (int)Math.Floor(posInTilemap.y);
-        return new Vector2(posInTilemap.x, posInTilemap.y);
+        return new Vector2Int((int)posInTilemap.x, (int)posInTilemap.y);
     }
 
     public Vector3 GetWorldPositionFromTilemap(Tilemap tilemap, Vector2 position)
@@ -40,6 +40,3 @@ public class Map
     }
     
 }
-
-//TODO: выенсти бочки в отдельный объект вне tilemap
-//TODO: обучение 
