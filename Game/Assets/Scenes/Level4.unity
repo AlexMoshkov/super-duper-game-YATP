@@ -266,6 +266,22 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 828320762, guid: b786817bc4e8d714eb1597c525c5251e, type: 3}
+      propertyPath: m_SizeDelta.x
+      value: 2172.14
+      objectReference: {fileID: 0}
+    - target: {fileID: 828320762, guid: b786817bc4e8d714eb1597c525c5251e, type: 3}
+      propertyPath: m_SizeDelta.y
+      value: 1062.76
+      objectReference: {fileID: 0}
+    - target: {fileID: 828320762, guid: b786817bc4e8d714eb1597c525c5251e, type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: -1.74
+      objectReference: {fileID: 0}
+    - target: {fileID: 828320762, guid: b786817bc4e8d714eb1597c525c5251e, type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: -2.83
+      objectReference: {fileID: 0}
     - target: {fileID: 3790501446910659213, guid: b786817bc4e8d714eb1597c525c5251e,
         type: 3}
       propertyPath: m_Name
@@ -18777,7 +18793,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1214879710}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -1.57, y: 0.7, z: -5}
+  m_LocalPosition: {x: -1.72, y: 0.48, z: -5}
   m_LocalScale: {x: 4, y: 4, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
@@ -19161,6 +19177,16 @@ PrefabInstance:
         type: 3}
       propertyPath: maxHealth
       value: 12
+      objectReference: {fileID: 0}
+    - target: {fileID: 6540686124864008727, guid: 13306c0563e5218479b88741b0b2a38b,
+        type: 3}
+      propertyPath: isDestroyed
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6540686124864008727, guid: 13306c0563e5218479b88741b0b2a38b,
+        type: 3}
+      propertyPath: isDropHealthBottle
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 6540686124864008730, guid: 13306c0563e5218479b88741b0b2a38b,
         type: 3}

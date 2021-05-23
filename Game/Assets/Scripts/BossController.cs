@@ -7,6 +7,7 @@ using UnityEngine.EventSystems;
 using UnityEngine.Tilemaps;
 using Random = System.Random;
 
+
 public class BossController : MonoBehaviour
 {
     [SerializeField] private float firstStageDelay;
@@ -24,8 +25,11 @@ public class BossController : MonoBehaviour
     private Map map;
     private int HPFirstStage;
     private Vector3 target;
+    private Random random; 
 
     private float timeMoving;
+
+    private float timeSpawn;
     // Start is called before the first frame update
     void Start()
     {
@@ -36,6 +40,8 @@ public class BossController : MonoBehaviour
         HPFirstStage = goblins.Length; //TODO: сделать хп бар для первой фазы босса 
         HPFinalStage = 100;
         timeMoving = 3f;
+        timeSpawn = 10f;
+        random = new Random();
     }
 
     // Update is called once per frame
@@ -44,15 +50,41 @@ public class BossController : MonoBehaviour
         if (HPFinalStage < 0)
         {
             Debug.Log("YOU WIN");
-        }
-        if (!isFinalStage)
-        {
-            TakeHit();
-            FirstStage();
+            foreach (var enemy in GameObject.FindGameObjectsWithTag("Enemy"))
+            {
+                Destroy(enemy);
+            }
         }
         else
         {
-            RandomMove();
+            if (!isFinalStage)
+            {
+                TakeHit();
+                FirstStage();
+            }
+            else
+            {
+                RandomMove();
+                FirstStage();
+                SpawnSkeletons();
+            }
+        }
+    }
+
+    private void SpawnSkeletons()
+    {
+        if (timeSpawn > 0)
+            timeSpawn -= Time.deltaTime;
+        else if (GameObject.FindGameObjectsWithTag("Enemy").Length < 3)
+        {
+            var pos = transform.position;
+            pos.z = 2;
+            Instantiate(skeleton, pos, transform.rotation).SetActive(true);
+            timeSpawn = 10f;
+        }
+        else
+        {
+            timeLeft = 10f;
         }
     }
 
@@ -102,7 +134,7 @@ public class BossController : MonoBehaviour
             var nextPos = GetNextPos(pos);
             //Debug.Log(nextPos);
             target = map.GetWorldPositionFromTilemap(tilemap, nextPos);
-            timeMoving = 3f;
+            timeMoving = 1f;
         }
         transform.position = Vector3.MoveTowards(transform.position, target, 1.2f * Time.deltaTime);
     }
@@ -112,14 +144,14 @@ public class BossController : MonoBehaviour
         while (true)
         {
             var direction = GetRandomDirection();
-            Debug.Log("direction: " + direction);
+            //Debug.Log("direction: " + direction);
             var pathLength = GetRandomPathLenght();
-            Debug.Log("Length: " + pathLength);
+            //Debug.Log("Length: " + pathLength);
             var nextPos = pos + direction * pathLength;
-            Debug.Log("nextPos: " + nextPos);
+            //Debug.Log("nextPos: " + nextPos);
             if (ContainsInZone(nextPos))
             {
-                Debug.Log("GOOD");
+                //Debug.Log("GOOD");
                 return nextPos;
             }
         }
@@ -129,11 +161,11 @@ public class BossController : MonoBehaviour
     {
         return pos.x >= 9 && pos.x <= 24 && pos.y >= 10 && pos.y <= 13;
     }
-    
+
     private Vector2Int GetRandomDirection()
     {
         var rand = new Random();
-        var number = rand.Next(4);
+        var number = random.Next(4);
         var result = number switch
         {
             0 => Vector2Int.down,
@@ -142,13 +174,14 @@ public class BossController : MonoBehaviour
             3 => Vector2Int.right,
             _ => Vector2Int.zero
         };
+        Debug.Log(number + " " + result);
         return result;
     }
 
     private int GetRandomPathLenght()
     {
         var rand = new Random();
-        return rand.Next(2, 6);
+        return random.Next(1, 6);
     }
 
     private void TakeHit()
@@ -158,7 +191,6 @@ public class BossController : MonoBehaviour
             if (goblin.activeSelf && goblin.GetComponent<MonsterController>().currentHealth <= 0)
             {
                 animator.SetTrigger("TakeHit");
-                Debug.Log("Take Hit Boss");
                 goblin.GetComponent<MonsterController>().SpawnHealthBottle();
                 goblin.SetActive(false);
                 HPFirstStage--;
@@ -208,7 +240,7 @@ public class BossController : MonoBehaviour
     {
         yield return new WaitForSeconds(0.5f);
         HPFinalStage -= dmg;
-        animator.SetTrigger("takeHit");
+        animator.SetTrigger("TakeHit");
         Debug.Log("HIT");
     }
 
