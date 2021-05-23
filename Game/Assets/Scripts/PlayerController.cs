@@ -140,11 +140,9 @@ public class PlayerController : MonoBehaviour
                 Debug.Log(collider.tag);
                 if (collider.CompareTag("Enemy"))
                     collider.GetComponentInParent<MonsterController>().TakeDamage(attackDmg);
-                else if (collider.CompareTag("Barrel")) 
+                else if (collider.CompareTag("Boss"))
                 {
-                    Destroy(collider.gameObject, 0.6f);
-                    var positionInTilemap = map.GetPositionInTilemap(tilemap, collider.transform.position);
-                    map.map[(int) positionInTilemap.x, (int) positionInTilemap.y] = CellType.Empty;
+                    collider.GetComponent<BossController>().TakeDamage(attackDmg);
                 }
             }
         }
@@ -162,7 +160,7 @@ public class PlayerController : MonoBehaviour
             yield break;
         yield return new WaitForSeconds(0.5f);
         HPCount -= damage;
-        animator.SetTrigger("takeHit");
+        animator.SetTrigger("TakeHit");
         
         // if (HPCount > 0 && damage > 0)
         // {

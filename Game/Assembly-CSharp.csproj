@@ -62,9 +62,10 @@
      <Compile Include="Assets\Scripts\TrainingController.cs" />
      <Compile Include="Assets\Scripts\Map.cs" />
      <Compile Include="Assets\Scripts\HealthBottle.cs" />
+     <Compile Include="Assets\Scripts\PathFinder.cs" />
      <Compile Include="Assets\Scripts\DialogsScript.cs" />
      <Compile Include="Assets\Scripts\Panel.cs" />
-     <Compile Include="Assets\Scripts\pauseMenu.cs" />
+     <Compile Include="Assets\Scripts\PauseMenu.cs" />
      <Compile Include="Assets\Scripts\CameraScipt.cs" />
      <Compile Include="Assets\Scripts\PlayerController.cs" />
      <Compile Include="Assets\Scripts\FireFloor.cs" />
@@ -72,7 +73,6 @@
      <Compile Include="Assets\Scripts\BossController.cs" />
      <Compile Include="Assets\Scripts\DialogTrigger.cs" />
      <Compile Include="Assets\Scripts\ClosedArea.cs" />
-     <Compile Include="Assets\Scripts\PathFinder.cs" />
      <None Include="Assets\EVil Wizard\License.txt" />
  <Reference Include="UnityEngine">
  <HintPath>C:/Program Files/Unity/Hub/Editor/2020.3.5f1/Editor/Data/Managed/UnityEngine/UnityEngine.dll</HintPath>

@@ -8,6 +8,7 @@ TagManager:
   - Bottle
   - Barrel
   - Camera
+  - Boss
   layers:
   - Default
   - TransparentFX

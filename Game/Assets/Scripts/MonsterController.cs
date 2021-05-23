@@ -114,7 +114,6 @@ public class MonsterController : MonoBehaviour
     {
         if (damage != 0 && currentHealth > 0)
             StartCoroutine(Damage(damage));
-        
     }
 
     private IEnumerator Damage(int dmg)
