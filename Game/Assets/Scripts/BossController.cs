@@ -5,6 +5,7 @@ using Unity.Mathematics;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.Tilemaps;
+using UnityEngine.UI;
 using Random = System.Random;
 
 
@@ -17,9 +18,12 @@ public class BossController : MonoBehaviour
     [SerializeField] private GameObject[] goblins;
     [SerializeField] private GameObject skeleton;
 
-    [SerializeField] private int HPFinalStage;
+    public Image firstStageHpBar;
+    public Image SecondStageHpBar;
+    public int HPFinalStage;
 
-    private bool isFinalStage = true;
+    private float HpFinalStageAll;
+    private bool isFinalStage = false;
     private float timeLeft;
     private int currentVariant = 1;
     private Map map;
@@ -35,10 +39,11 @@ public class BossController : MonoBehaviour
     {
         timeLeft = firstStageDelay;
         map = tilemap.GetComponent<TilemapScript>().map;
-        //goblins[0].SetActive(true);
-        //goblins[1].SetActive(true);
+        goblins[0].SetActive(true);
+        goblins[1].SetActive(true);
         HPFirstStage = goblins.Length; //TODO: сделать хп бар для первой фазы босса 
         HPFinalStage = 100;
+        HpFinalStageAll = HPFinalStage;
         timeMoving = 3f;
         timeSpawn = 10f;
         random = new Random();
@@ -174,7 +179,7 @@ public class BossController : MonoBehaviour
             3 => Vector2Int.right,
             _ => Vector2Int.zero
         };
-        Debug.Log(number + " " + result);
+        //Debug.Log(number + " " + result);
         return result;
     }
 
@@ -194,6 +199,7 @@ public class BossController : MonoBehaviour
                 goblin.GetComponent<MonsterController>().SpawnHealthBottle();
                 goblin.SetActive(false);
                 HPFirstStage--;
+                firstStageHpBar.fillAmount -= (float)1 / goblins.Length;
             }
         }
 
@@ -240,8 +246,9 @@ public class BossController : MonoBehaviour
     {
         yield return new WaitForSeconds(0.5f);
         HPFinalStage -= dmg;
+        SecondStageHpBar.fillAmount -= dmg / HpFinalStageAll;
         animator.SetTrigger("TakeHit");
-        Debug.Log("HIT");
+        Debug.Log(dmg+" "+HpFinalStageAll+" " +dmg / HpFinalStageAll);
     }
 
     private void Variant1()

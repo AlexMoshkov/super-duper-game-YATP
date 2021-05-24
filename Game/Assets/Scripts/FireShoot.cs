@@ -34,5 +34,10 @@ public class FireShoot : MonoBehaviour
             collision.GetComponentInParent<MonsterController>().TakeDamage(11);
             Destroy(gameObject);
         }
+        if (collision.tag == "Boss" && collision.GetComponentInParent<BossController>().HPFinalStage >= 0)
+        {
+            collision.GetComponentInParent<BossController>().TakeDamage(11);
+            Destroy(gameObject);
+        }
     }
 }
