@@ -1,7 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
 using System;
-using Unity.Mathematics;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.Tilemaps;
@@ -17,6 +16,7 @@ public class BossController : MonoBehaviour
     [SerializeField] private GameObject fireFloor;
     [SerializeField] private GameObject[] goblins;
     [SerializeField] private GameObject skeleton;
+    [SerializeField] private GameObject dieTrigger;
 
     public Image firstStageHpBar;
     public Image SecondStageHpBar;
@@ -32,7 +32,7 @@ public class BossController : MonoBehaviour
     private Random random; 
 
     private float timeMoving;
-
+    private float timeFinalStage;
     private float timeSpawn;
     // Start is called before the first frame update
     void Start()
@@ -46,14 +46,30 @@ public class BossController : MonoBehaviour
         HpFinalStageAll = HPFinalStage;
         timeMoving = 3f;
         timeSpawn = 10f;
+        timeFinalStage = 3f;
         random = new Random();
     }
 
     // Update is called once per frame
-    void Update()
+    private void Update()
     {
-        if (HPFinalStage < 0)
+        if (animator.GetBool("IsDeath")) return;
+        if (animator.GetBool("IsFinalFirstStage"))
         {
+            if (timeFinalStage > 0)
+                timeFinalStage -= Time.deltaTime;
+            else if (timeFinalStage < 0)
+            {
+                animator.SetBool("IsFinalFirstStage", false);
+                isFinalStage = true;
+                transform.position += Vector3.down;
+            }
+        }
+
+        if (HPFinalStage <= 0)
+        {
+            animator.SetBool("IsDeath", true);
+            dieTrigger.SetActive(true);
             Debug.Log("YOU WIN");
             foreach (var enemy in GameObject.FindGameObjectsWithTag("Enemy"))
             {
@@ -89,7 +105,7 @@ public class BossController : MonoBehaviour
         }
         else
         {
-            timeLeft = 10f;
+            timeSpawn = 10f;
         }
     }
 
@@ -230,9 +246,7 @@ public class BossController : MonoBehaviour
 
         if (HPFirstStage == 0)
         {
-            animator.SetTrigger("finalFirstStage");
-            isFinalStage = true;
-            transform.position += Vector3.down;
+            animator.SetBool("IsFinalFirstStage", true);
         }
     }
     

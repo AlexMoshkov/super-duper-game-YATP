@@ -20,7 +20,9 @@ public class DialogsScript : MonoBehaviour
     [SerializeField] private GameObject goblins;
     [SerializeField] private Image bonn;
     [SerializeField] private TrainingController training;
-    
+    [SerializeField] private GameObject bossImage;
+    [SerializeField] private Image player;
+
     public int index;
     private int currentDialog;
     public GameObject[] objects;
@@ -73,12 +75,24 @@ public class DialogsScript : MonoBehaviour
                 textBox.alignment = TextAnchor.UpperRight;
                 textBox.text = text.Substring(1);
                 break;
+            case 'M':
+                textBox.alignment = TextAnchor.UpperRight;
+                textBox.text = text.Substring(1);
+                break;
             case 'B':
                 bonn.enabled = true;
                 textBox.alignment = TextAnchor.UpperRight;
                 textBox.text = text.Substring(1);
                 break;
             case 'S':
+                textBox.alignment = TextAnchor.UpperRight;
+                textBox.text = text.Substring(1);
+                break;
+            case 'L':
+                textBox.alignment = TextAnchor.UpperLeft;
+                textBox.text = text.Substring(1);
+                break;
+            case 'R':
                 textBox.alignment = TextAnchor.UpperRight;
                 textBox.text = text.Substring(1);
                 break;
@@ -117,6 +131,12 @@ public class DialogsScript : MonoBehaviour
                 if (index == 11 && level == 3)
                 {
                     kingSpirit.GetComponent<King>().enabled = true;
+                }
+
+                if (level == 4)
+                {
+                    bossImage.SetActive(false);
+                    player.enabled = false;
                 }
 
                 index++;
