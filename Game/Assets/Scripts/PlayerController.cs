@@ -19,12 +19,12 @@ public class PlayerController : MonoBehaviour
     
     public float HPCount;
     private float manaCost = 0.3f;
-    
+
+    private AudioSource audio;
     
     private Animator animator;
     private SpriteRenderer sprite;
     private GameObject attackZone;
-
     private bool isAttacking = false;
     private float timeLeft;
     private AttackType attackType;
@@ -42,6 +42,7 @@ public class PlayerController : MonoBehaviour
         attackZone = GameObject.Find("Attack Zone");
         timeLeft = attackDelay;
         map = tilemap.GetComponent<TilemapScript>().map;
+        audio = gameObject.GetComponent<AudioSource>();
     }
     
     void Update()
@@ -95,7 +96,9 @@ public class PlayerController : MonoBehaviour
         if (attackType != AttackType.NoAttack && !isAttacking)
         {
             isAttacking = true;
-
+            
+            
+            
             var triggerAttack = "";
             var attackDmg = 0;
             switch (attackType)
@@ -103,12 +106,14 @@ public class PlayerController : MonoBehaviour
                 case AttackType.NormalAttack:
                     timeLeft = 1f;
                     triggerAttack = "normal";
+                    audio.PlayOneShot(audio.clip);
                     attackDmg = 5;
                     break;
                 case AttackType.HeavyAttack:
                     manaCost = 0.35f;
                     if (manaBar.fillAmount - manaCost < 0)
                         break;
+                    audio.PlayOneShot(audio.clip);
                     timeLeft = 0.8f;
                     triggerAttack = "heavy";
                     attackDmg = 8;
@@ -137,7 +142,7 @@ public class PlayerController : MonoBehaviour
             playerCollider.OverlapCollider(new ContactFilter2D(), colliders);
             foreach (var collider in colliders)
             {
-                Debug.Log(collider.tag);
+                //Debug.Log(collider.tag);
                 if (collider.CompareTag("Enemy"))
                     collider.GetComponentInParent<MonsterController>().TakeDamage(attackDmg);
                 else if (collider.CompareTag("Boss"))
@@ -161,20 +166,14 @@ public class PlayerController : MonoBehaviour
         yield return new WaitForSeconds(0.5f);
         HPCount -= damage;
         animator.SetTrigger("TakeHit");
-        
-        // if (HPCount > 0 && damage > 0)
-        // {
-        //     var force = new Vector3(sprite.flipX ? 20f : -20f, 0, 0);
-        //     rigidBody.AddForce(force, ForceMode2D.Impulse);
-        // }
-            
+
         if (HPCount <= 0)
         {
             animator.SetBool("IsRun", false);
             animator.SetBool("IsDeath", true);
             yield return new WaitForSeconds(5f);
             Destroy(gameObject);
-            Debug.Log("YOU ARE DEAD");
+            //Debug.Log("YOU ARE DEAD");
         }
     }
 }

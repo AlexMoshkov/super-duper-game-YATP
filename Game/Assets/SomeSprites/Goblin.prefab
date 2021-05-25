@@ -108,6 +108,8 @@ MonoBehaviour:
   isDropHealthBottle: 1
   maxHealth: 15
   attackZone: {fileID: 6234746015858952453}
+  isDestroyed: 0
+  attackDamage: 3
 --- !u!95 &6234746014586183996
 Animator:
   serializedVersion: 3
@@ -161,7 +163,7 @@ BoxCollider2D:
   m_IsTrigger: 1
   m_UsedByEffector: 0
   m_UsedByComposite: 0
-  m_Offset: {x: -0.0128162205, y: 0.09484598}
+  m_Offset: {x: 0.0067127347, y: 0.084198415}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0.5, y: 0.37}
@@ -172,7 +174,7 @@ BoxCollider2D:
     adaptiveTiling: 0
   m_AutoTiling: 0
   serializedVersion: 2
-  m_Size: {x: 0.38417816, y: 0.42215383}
+  m_Size: {x: 0.34512025, y: 0.4008587}
   m_EdgeRadius: 0
 --- !u!61 &574382262766926486
 BoxCollider2D:
@@ -187,7 +189,7 @@ BoxCollider2D:
   m_IsTrigger: 0
   m_UsedByEffector: 0
   m_UsedByComposite: 0
-  m_Offset: {x: -0.011646628, y: -0.058919206}
+  m_Offset: {x: 0.0038265288, y: -0.058919206}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0.5, y: 0.37}
@@ -198,7 +200,7 @@ BoxCollider2D:
     adaptiveTiling: 0
   m_AutoTiling: 0
   serializedVersion: 2
-  m_Size: {x: 0.5853424, y: 0.091481775}
+  m_Size: {x: 0.34559172, y: 0.091481775}
   m_EdgeRadius: 0
 --- !u!1 &6234746015858952453
 GameObject:

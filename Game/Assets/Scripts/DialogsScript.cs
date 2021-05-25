@@ -39,10 +39,10 @@ public class DialogsScript : MonoBehaviour
         if (!canvas.enabled) return;
         Time.timeScale = 0;
         GetNextEvent(index);
-        if (Input.anyKeyDown)
+        if (Input.GetKeyDown(KeyCode.Space))
         {
             GetNextEvent(++index);
-            Debug.Log(index);
+            //Debug.Log(index);
         }
     }
 
@@ -99,7 +99,7 @@ public class DialogsScript : MonoBehaviour
             case '_':
                 if (level == 1 && index == 12)
                 {
-                    Debug.Log("vision");
+                    //Debug.Log("vision");
                     objects[0].GetComponent<MonsterController>().vision = 15;
                     goblin.enabled = false;
                 }
@@ -108,6 +108,14 @@ public class DialogsScript : MonoBehaviour
                 if (level == 3)
                     bonn.enabled = false;
 
+                if (level == 3 && index == 5)
+                {
+                    foreach (var enemy in GameObject.FindGameObjectsWithTag("Enemy"))
+                    {
+                        enemy.GetComponent<MonsterController>().vision = 20;
+                    }
+                }
+                
                 if (index == 4 && level == 1) //open arrows
                 {
                     StartCoroutine(training.ChangeSprite(training.arrows));
@@ -139,9 +147,17 @@ public class DialogsScript : MonoBehaviour
                     player.enabled = false;
                 }
 
+                
+
                 index++;
                 currentDialog++;
                 Time.timeScale = 1;
+                
+                if (level == 4 && index == 18)
+                {
+                    SceneManager.LoadScene("mainMenu");
+                }
+                
                 canvas.enabled = false;
                 break;
         }

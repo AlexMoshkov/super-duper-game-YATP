@@ -17,7 +17,7 @@ public class MonsterController : MonoBehaviour
     [SerializeField] private bool isDropHealthBottle;
     [SerializeField] public int maxHealth;
     [SerializeField] private GameObject attackZone;
-    [SerializeField] private bool isDestroyed; 
+    [SerializeField] private bool isDestroyed;
 
     [SerializeField] private int attackDamage = 3;
 
@@ -67,46 +67,44 @@ public class MonsterController : MonoBehaviour
     {
         if (currentHealth <= 0 || takingDamage) return;
         
-        Vector3 nextPos = GetNextPosition(map.playerPosition);
-        Debug.Log(nextPos);
-        if (nextPos == new Vector3(99999, 99999, 0)) return;
+        var nextPosInTilemap = GetNextPosition(map.playerPosition);
         
-        nextPos = map.GetWorldPositionFromTilemap(tilemap, nextPos);
+        Debug.Log(nextPosInTilemap);
+        if (nextPosInTilemap == new Vector2Int(99999, 99999))
+        {
+            animator.SetBool("IsRun", false);
+            return;
+        }
+        var curPos = map.GetPositionInTilemap(tilemap, transform.position);
+        animator.SetBool("IsRun", curPos != nextPosInTilemap);
+        
+        var nextPos = map.GetWorldPositionFromTilemap(tilemap, nextPosInTilemap);
         nextPos.z = -1.5f;
-        
-        
-        animator.SetBool("IsRun", nextPos - transform.position != Vector3.zero);
-
-        if (nextPos.x - transform.position.x != 0)
-            sprite.flipX = (nextPos.x - transform.position.x) < 0;
-
-        if (!animator.GetBool("IsRun"))
+        sprite.flipX = (map.playerPosition.x <= curPos.x);
+        if (curPos + Vector2Int.left == map.playerPosition || curPos + Vector2Int.right == map.playerPosition)
             Attack();
 
         transform.position = Vector3.MoveTowards(transform.position, nextPos, acceleration * Time.deltaTime);
     }
 
-    private Vector2 GetNextPosition(Vector2Int playerPos)
+    private Vector2Int GetNextPosition(Vector2Int playerPos)
     {
         var currentPos = map.GetPositionInTilemap(tilemap, transform.position);
         var leftTarget = playerPos + Vector2Int.left;
         var rightTarget = playerPos + Vector2Int.right;
-        Debug.Log("targets: " + leftTarget + " " + rightTarget);
         var leftPath = pathFinder.FindPath(currentPos, leftTarget, map.map);
         var rightPath = pathFinder.FindPath(currentPos, rightTarget, map.map);
-        Debug.Log(rightPath.Count + " " + leftPath.Count);
         if ((leftPath.Count <= rightPath.Count && leftPath.Count != 0) || rightPath.Count == 0)
         {
-            Debug.Log("left");
             return GetNextPositionInPath(currentPos, leftPath);
         }
         return GetNextPositionInPath(currentPos, rightPath);
     }
 
-    private Vector2 GetNextPositionInPath(Vector2Int currentPos, List<Vector2Int> path)
+    private Vector2Int GetNextPositionInPath(Vector2Int currentPos, List<Vector2Int> path)
     {
         if (path.Count >= vision)
-            return new Vector2(99999, 99999);
+            return new Vector2Int(99999, 99999);
         return path.Count >= 2 ? path[1] : currentPos;
     }
 
@@ -122,8 +120,6 @@ public class MonsterController : MonoBehaviour
         takingDamage = true;
         currentHealth -= dmg;
         animator.SetTrigger("takeHit");
-        Debug.Log("HIT");
-        Debug.Log(dmg);
         if (currentHealth > 0 && dmg > 0)
         {
             var force = new Vector3(sprite.flipX ? 20f : -20f, 0, 0);
@@ -135,7 +131,10 @@ public class MonsterController : MonoBehaviour
             animator.SetBool("IsRun", false);
             animator.SetBool("IsDeath", true);
 
-            gameObject.GetComponent<BoxCollider2D>().enabled = false;
+            foreach (var collider in gameObject.GetComponents<BoxCollider2D>())
+            {
+                collider.enabled = false;
+            }
             yield return new WaitForSeconds(1.5f);
             SpawnHealthBottle();
             if (isDestroyed)

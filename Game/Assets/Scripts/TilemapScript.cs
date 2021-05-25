@@ -20,9 +20,29 @@ public class TilemapScript : MonoBehaviour
         map = new Map(cellmap, tilemap, player.transform.position);
     }
 
-    private void Update()
+    private void FixedUpdate()
     {
+        UpdateMap();
         map.playerPosition = map.GetPositionInTilemap(tilemap, player.transform.position);
+        foreach (var enemy in GameObject.FindGameObjectsWithTag("Enemy"))
+        {
+            var pos = map.GetPositionInTilemap(tilemap, enemy.transform.position);
+            map.map[pos.x, pos.y] = CellType.Occupied;
+        }
+    }
+
+    private void UpdateMap()
+    {
+        var bounds = tilemap.cellBounds;
+        var allTiles = tilemap.GetTilesBlock(bounds);
+        for (var x = 0; x < bounds.size.x; x++)
+        for (var y = 0; y < bounds.size.y; y++)
+        {
+            var tile = allTiles[x + y * bounds.size.x];
+            if (tile != null)
+                map.map[x, y] = CellType.Occupied;
+            else map.map[x, y] = CellType.Empty;
+        }
     }
 
     private CellType[,] GetMap()

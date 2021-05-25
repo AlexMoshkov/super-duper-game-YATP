@@ -17,6 +17,11 @@ public class BossController : MonoBehaviour
     [SerializeField] private GameObject[] goblins;
     [SerializeField] private GameObject skeleton;
     [SerializeField] private GameObject dieTrigger;
+    [SerializeField] private SpriteRenderer sprite;
+    [SerializeField] private GameObject player;
+
+    [SerializeField] private AudioSource backgroundMusic;
+    [SerializeField] private AudioSource endMusic;
 
     public Image firstStageHpBar;
     public Image SecondStageHpBar;
@@ -41,7 +46,7 @@ public class BossController : MonoBehaviour
         map = tilemap.GetComponent<TilemapScript>().map;
         goblins[0].SetActive(true);
         goblins[1].SetActive(true);
-        HPFirstStage = goblins.Length; //TODO: сделать хп бар для первой фазы босса 
+        HPFirstStage = goblins.Length;
         HPFinalStage = 100;
         HpFinalStageAll = HPFinalStage;
         timeMoving = 3f;
@@ -66,11 +71,12 @@ public class BossController : MonoBehaviour
             }
         }
 
+        sprite.flipX = (transform.position.x >= player.transform.position.x);
+        
         if (HPFinalStage <= 0)
         {
             animator.SetBool("IsDeath", true);
-            dieTrigger.SetActive(true);
-            Debug.Log("YOU WIN");
+            StartCoroutine(ActiveTrigger());
             foreach (var enemy in GameObject.FindGameObjectsWithTag("Enemy"))
             {
                 Destroy(enemy);
@@ -91,6 +97,15 @@ public class BossController : MonoBehaviour
             }
         }
     }
+
+    private IEnumerator ActiveTrigger()
+    {
+        yield return new WaitForSeconds(5f);
+        dieTrigger.SetActive(true);
+        backgroundMusic.Pause();
+        endMusic.PlayOneShot(endMusic.clip);
+    }
+    
 
     private void SpawnSkeletons()
     {
@@ -153,8 +168,8 @@ public class BossController : MonoBehaviour
         {
             var pos = map.GetPositionInTilemap(tilemap, transform.position);
             var nextPos = GetNextPos(pos);
-            //Debug.Log(nextPos);
             target = map.GetWorldPositionFromTilemap(tilemap, nextPos);
+            target.z = -5;
             timeMoving = 1f;
         }
         transform.position = Vector3.MoveTowards(transform.position, target, 1.2f * Time.deltaTime);
@@ -165,14 +180,10 @@ public class BossController : MonoBehaviour
         while (true)
         {
             var direction = GetRandomDirection();
-            //Debug.Log("direction: " + direction);
             var pathLength = GetRandomPathLenght();
-            //Debug.Log("Length: " + pathLength);
             var nextPos = pos + direction * pathLength;
-            //Debug.Log("nextPos: " + nextPos);
             if (ContainsInZone(nextPos))
             {
-                //Debug.Log("GOOD");
                 return nextPos;
             }
         }
@@ -185,7 +196,6 @@ public class BossController : MonoBehaviour
 
     private Vector2Int GetRandomDirection()
     {
-        var rand = new Random();
         var number = random.Next(4);
         var result = number switch
         {
@@ -195,13 +205,11 @@ public class BossController : MonoBehaviour
             3 => Vector2Int.right,
             _ => Vector2Int.zero
         };
-        //Debug.Log(number + " " + result);
         return result;
     }
 
     private int GetRandomPathLenght()
     {
-        var rand = new Random();
         return random.Next(1, 6);
     }
 
@@ -273,7 +281,9 @@ public class BossController : MonoBehaviour
             {
                 if (x == 9 || x == 24 || y == 10 || y == 13)
                 {
-                    Instantiate(fireFloor, map.GetWorldPositionFromTilemap(tilemap, new Vector2(x, y)), transform.rotation).SetActive(true);
+                    var pos = map.GetWorldPositionFromTilemap(tilemap, new Vector2(x, y));
+                    pos.z = -2;
+                    Instantiate(fireFloor, pos, transform.rotation).SetActive(true);
                 }
             } 
         }
@@ -287,7 +297,9 @@ public class BossController : MonoBehaviour
             {
                 if ((x + y) % 2 == 0)
                 {
-                    Instantiate(fireFloor, map.GetWorldPositionFromTilemap(tilemap, new Vector2(x, y)), transform.rotation).SetActive(true);
+                    var pos = map.GetWorldPositionFromTilemap(tilemap, new Vector2(x, y));
+                    pos.z = -2;
+                    Instantiate(fireFloor, pos, transform.rotation).SetActive(true);
                 }
             } 
         }
@@ -299,11 +311,16 @@ public class BossController : MonoBehaviour
         {
             for (var y = 10; y <= 13; y++)
             {
-                if ((IsBetween(x, 9, 11) && IsBetween(y, 11, 13)) || 
+                if ((IsBetween(x, 9, 11) && IsBetween(y, 11, 13)) ||
                     (IsBetween(x, 13, 15) && IsBetween(y, 10, 12)) ||
                     (IsBetween(x, 17, 19) && IsBetween(y, 11, 13)) ||
                     (IsBetween(x, 21, 23) && IsBetween(y, 10, 12)))
-                    Instantiate(fireFloor, map.GetWorldPositionFromTilemap(tilemap, new Vector2(x, y)), transform.rotation).SetActive(true);
+                {
+                    var pos = map.GetWorldPositionFromTilemap(tilemap, new Vector2(x, y));
+                    pos.z = -2;
+                    Instantiate(fireFloor, pos, transform.rotation).SetActive(true);
+                }
+                    
             } 
         }
     }
@@ -314,10 +331,14 @@ public class BossController : MonoBehaviour
         {
             for (var y = 10; y <= 13; y++)
             {
-                if (!((IsBetween(x, 10, 11) && IsBetween(y, 11, 12)) || 
-                    (IsBetween(x, 15, 16) && IsBetween(y, 11, 12)) ||
-                    (IsBetween(x, 20, 21) && IsBetween(y, 11, 12))))
-                    Instantiate(fireFloor, map.GetWorldPositionFromTilemap(tilemap, new Vector2(x, y)), transform.rotation).SetActive(true);
+                if (!((IsBetween(x, 10, 11) && IsBetween(y, 11, 12)) ||
+                      (IsBetween(x, 15, 16) && IsBetween(y, 11, 12)) ||
+                      (IsBetween(x, 20, 21) && IsBetween(y, 11, 12))))
+                {
+                    var pos = map.GetWorldPositionFromTilemap(tilemap, new Vector2(x, y));
+                    pos.z = -2;
+                    Instantiate(fireFloor, pos, transform.rotation).SetActive(true);
+                }
             } 
         }
     }
@@ -330,7 +351,9 @@ public class BossController : MonoBehaviour
             {
                 if ((x + y) % 2 != 0)
                 {
-                    Instantiate(fireFloor, map.GetWorldPositionFromTilemap(tilemap, new Vector2(x, y)), transform.rotation).SetActive(true);
+                    var pos = map.GetWorldPositionFromTilemap(tilemap, new Vector2(x, y));
+                    pos.z = -2;
+                    Instantiate(fireFloor, pos, transform.rotation).SetActive(true);
                 }
             } 
         }
