@@ -4,7 +4,7 @@ using Unity.IO.LowLevel.Unsafe;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-public class PauseMenu : MonoBehaviour
+public class pauseMenu : MonoBehaviour
 {
     public static bool GameIsPaused = false;
     public GameObject inGameMenuUI;
