@@ -52,28 +52,15 @@
     <ImplicitlyExpandDesignTimeFacades>false</ImplicitlyExpandDesignTimeFacades>
   </PropertyGroup>
   <ItemGroup>
-     <Compile Include="Assets\Scripts\MenuOnDeath.cs" />
-     <Compile Include="Assets\Scripts\MonsterController.cs" />
-     <Compile Include="Assets\Scripts\ExitScript.cs" />
-     <Compile Include="Assets\Scripts\TilemapScript.cs" />
-     <Compile Include="Assets\Scripts\King.cs" />
-     <Compile Include="Assets\Scripts\FirstQuest.cs" />
-     <Compile Include="Assets\Scripts\CellType.cs" />
-     <Compile Include="Assets\Scripts\TrainingController.cs" />
-     <Compile Include="Assets\Scripts\Map.cs" />
-     <Compile Include="Assets\Scripts\HealthBottle.cs" />
-     <Compile Include="Assets\Scripts\PathFinder.cs" />
-     <Compile Include="Assets\Scripts\DialogsScript.cs" />
-     <Compile Include="Assets\Scripts\Panel.cs" />
-     <Compile Include="Assets\Scripts\PauseMenu.cs" />
-     <Compile Include="Assets\Scripts\CameraScipt.cs" />
-     <Compile Include="Assets\Scripts\PlayerController.cs" />
-     <Compile Include="Assets\Scripts\FireFloor.cs" />
-     <Compile Include="Assets\Scripts\FireShoot.cs" />
-     <Compile Include="Assets\Scripts\BossController.cs" />
-     <Compile Include="Assets\Scripts\DialogTrigger.cs" />
-     <Compile Include="Assets\Scripts\ClosedArea.cs" />
+     <Compile Include="Assets\Cainos\Pixel Art Top Down - Basic\Script\SpriteColorAnimation.cs" />
+     <Compile Include="Assets\Cainos\Pixel Art Top Down - Basic\Script\TopDownCharacterController.cs" />
+     <Compile Include="Assets\Cainos\Pixel Art Top Down - Basic\Script\LayerTrigger.cs" />
+     <Compile Include="Assets\Cainos\Pixel Art Top Down - Basic\Script\CameraFollow.cs" />
+     <Compile Include="Assets\Cainos\Pixel Art Top Down - Basic\Script\PropsAltar.cs" />
+     <None Include="Assets\Cainos\Pixel Art Top Down - Basic\Changelog.txt" />
+     <None Include="Assets\Cainos\Pixel Art Top Down - Basic\Shader\SH Sprite Shadow.shader" />
      <None Include="Assets\EVil Wizard\License.txt" />
+     <None Include="Assets\Cainos\Pixel Art Top Down - Basic\Shader\SH Sprite Shadow Mask.shader" />
  <Reference Include="UnityEngine">
  <HintPath>C:/Program Files/Unity/Hub/Editor/2020.3.5f1/Editor/Data/Managed/UnityEngine/UnityEngine.dll</HintPath>
  </Reference>
@@ -730,6 +717,10 @@
  </Reference>
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="NewAssembly.csproj">
+      <Project>{1a9b6209-f620-15d1-1d5d-b7fd4e10cfa3}</Project>
+      <Name>NewAssembly</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it.

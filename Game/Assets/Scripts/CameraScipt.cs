@@ -11,7 +11,10 @@ public class CameraScipt : MonoBehaviour
     [SerializeField] private GameObject player;
     [SerializeField] private BoxCollider2D leftBorder;
     [SerializeField] private BoxCollider2D rightBorder;
-    
+    [SerializeField] private BoxCollider2D cameraCollider;
+
+    public bool isTriggeredNow = false;
+        
     private float acceleration = 1.7f;
     private BoxCollider2D playerCollider;
 
@@ -30,6 +33,34 @@ public class CameraScipt : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        if (isTriggeredNow)
+        {
+            StopTriggerCamera();
+            return;
+        }
+        
+        moveCamera();
+    }
+
+    private void StopTriggerCamera()
+    {
+        var colliders = new List<Collider2D>();
+        var enemyCount = 1;
+        cameraCollider.OverlapCollider(new ContactFilter2D(), colliders);
+        foreach (var collider in colliders)
+        {
+            if (collider.CompareTag("Enemy") && collider.GetComponent<MonsterController>().currentHealth > 0)
+                enemyCount++;
+        }
+
+        if (enemyCount == 0)
+        {
+            isTriggeredNow = false;
+        }
+    }
+    
+    private void moveCamera()
+    {
         if (transform.position.x < player.transform.position.x + 3)
         {
             isLevelStart = true;
@@ -43,6 +74,7 @@ public class CameraScipt : MonoBehaviour
                 new Vector3(player.transform.position.x, transform.position.y, -10), acceleration * Time.deltaTime);
         }
     }
+    
 
     private void IgnoreEnemyCollider()
     {
