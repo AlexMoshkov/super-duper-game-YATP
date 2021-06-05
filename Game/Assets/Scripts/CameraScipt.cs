@@ -80,8 +80,12 @@ public class CameraScipt : MonoBehaviour
     {
         foreach (var enemy in GameObject.FindGameObjectsWithTag("Enemy"))
         {
-            Physics2D.IgnoreCollision(leftBorder, enemy.GetComponent<BoxCollider2D>(), true);
-            Physics2D.IgnoreCollision(rightBorder, enemy.GetComponent<BoxCollider2D>(), true);
+            var enemyColliders = enemy.GetComponents<BoxCollider2D>();
+            foreach (var collider in enemyColliders)
+            {
+                Physics2D.IgnoreCollision(leftBorder, collider, true);
+                Physics2D.IgnoreCollision(rightBorder, collider, true);
+            }
         }
     }
     
