@@ -69,7 +69,6 @@ public class MonsterController : MonoBehaviour
         
         var nextPosInTilemap = GetNextPosition(map.playerPosition);
         
-        Debug.Log(nextPosInTilemap);
         if (nextPosInTilemap == new Vector2Int(99999, 99999))
         {
             animator.SetBool("IsRun", false);
