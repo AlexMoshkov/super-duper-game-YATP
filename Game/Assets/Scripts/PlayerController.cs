@@ -16,6 +16,8 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private Transform shootPosition;
     [SerializeField] private GameObject fireBall;
     [SerializeField] private Image manaBar;
+    [SerializeField] private Image delayBar;
+    [SerializeField] private Image delayBarBG;
     
     public float HPCount;
     private float manaCost = 0.3f;
@@ -70,11 +72,16 @@ public class PlayerController : MonoBehaviour
             var right = Input.GetKey(KeyCode.RightArrow) ? 1 : 0;
 
             var moveVector = new Vector3(left + right, up + down, 0);
-            sprite.flipX = moveVector.x < 0;
+            
             if (moveVector.x != 0)
                 attackZone.transform.localScale = new Vector3(moveVector.x, 1, 1);
 
-            animator.SetBool("IsRun", true);
+            if ((Vector2) moveVector != Vector2.zero)
+            {
+                animator.SetBool("IsRun", true);
+                sprite.flipX = moveVector.x < 0;
+            }
+
             transform.position += moveVector * acceleration * Time.deltaTime;
         }
     }
@@ -88,17 +95,24 @@ public class PlayerController : MonoBehaviour
             attackType = Input.GetKeyDown(KeyCode.D) ? AttackType.SpecialAttack : AttackType.NoAttack;
 
         if (isAttacking)
+        {
             timeLeft -= Time.deltaTime;
-        
-        if (timeLeft < 0) 
+            delayBar.fillAmount -=  Time.deltaTime;
+        }
+
+        if (timeLeft < 0)
+        {
             isAttacking = false;
-        
-        if (attackType != AttackType.NoAttack && !isAttacking)
+            delayBar.enabled = false;
+            delayBarBG.enabled = false;
+        }
+    
+
+    if (attackType != AttackType.NoAttack && !isAttacking)
         {
             isAttacking = true;
-            
-            
-            
+            delayBar.enabled = true;
+            delayBarBG.enabled = true;
             var triggerAttack = "";
             var attackDmg = 0;
             switch (attackType)
@@ -132,7 +146,7 @@ public class PlayerController : MonoBehaviour
                     manaBar.fillAmount -= manaCost;
                     break;
             }
-
+            delayBar.fillAmount = timeLeft;
             if (triggerAttack == "")
                 return;
             animator.SetTrigger(triggerAttack);
@@ -155,7 +169,6 @@ public class PlayerController : MonoBehaviour
 
     public void TakeDamage(int damage)
     {
-        //TODO:переписать эту тупость :)
         StartCoroutine(Damage(damage));
     }
     
