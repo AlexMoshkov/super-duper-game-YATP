@@ -52,7 +52,7 @@ public class PlayerController : MonoBehaviour
         {
             animator.SetBool("IsRun", false);
             MakeAttack();
-            if (Input.GetButton("Vertical") || Input.GetButton("Horizontal"))
+            //if (Input.GetButton("Vertical") || Input.GetButton("Horizontal"))
                 Run();
         }
 
@@ -74,7 +74,8 @@ public class PlayerController : MonoBehaviour
             if (moveVector.x != 0)
                 attackZone.transform.localScale = new Vector3(moveVector.x, 1, 1);
 
-            animator.SetBool("IsRun", true);
+            if ((Vector2)moveVector != Vector2.zero) 
+                animator.SetBool("IsRun", true);
             transform.position += moveVector * acceleration * Time.deltaTime;
         }
     }
