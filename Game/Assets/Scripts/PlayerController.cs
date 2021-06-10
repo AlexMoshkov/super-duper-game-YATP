@@ -16,6 +16,8 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private Transform shootPosition;
     [SerializeField] private GameObject fireBall;
     [SerializeField] private Image manaBar;
+    //[SerializeField] private Image delayBar;
+    //[SerializeField] private Image delayBarBG;
     
     public float HPCount;
     private float manaCost = 0.3f;
@@ -52,7 +54,7 @@ public class PlayerController : MonoBehaviour
         {
             animator.SetBool("IsRun", false);
             MakeAttack();
-            //if (Input.GetButton("Vertical") || Input.GetButton("Horizontal"))
+            if (Input.GetButton("Vertical") || Input.GetButton("Horizontal"))
                 Run();
         }
 
@@ -64,48 +66,59 @@ public class PlayerController : MonoBehaviour
     {
         if (!isAttacking)
         {
-            var up = Input.GetKey(KeyCode.UpArrow) ? 1 : 0;
-            var left = Input.GetKey(KeyCode.LeftArrow) ? -1 : 0;
-            var down = Input.GetKey(KeyCode.DownArrow) ? -1 : 0;
-            var right = Input.GetKey(KeyCode.RightArrow) ? 1 : 0;
+            var up = Input.GetKey(KeyCode.W) ? 1 : 0;
+            var left = Input.GetKey(KeyCode.A) ? -1 : 0;
+            var down = Input.GetKey(KeyCode.S) ? -1 : 0;
+            var right = Input.GetKey(KeyCode.D) ? 1 : 0;
 
             var moveVector = new Vector3(left + right, up + down, 0);
-            sprite.flipX = moveVector.x < 0;
+            
             if (moveVector.x != 0)
                 attackZone.transform.localScale = new Vector3(moveVector.x, 1, 1);
 
-            if ((Vector2)moveVector != Vector2.zero) 
+            if ((Vector2) moveVector != Vector2.zero)
+            {
                 animator.SetBool("IsRun", true);
+                sprite.flipX = moveVector.x < 0;
+            }
+
             transform.position += moveVector * acceleration * Time.deltaTime;
         }
     }
 
     private void MakeAttack()
     {
-        attackType = Input.GetKeyDown(KeyCode.A) ? AttackType.NormalAttack : AttackType.NoAttack;
+        attackType = Input.GetKeyDown(KeyCode.J) ? AttackType.NormalAttack : AttackType.NoAttack;
         if (attackType == AttackType.NoAttack)
-            attackType = Input.GetKeyDown(KeyCode.S) ? AttackType.HeavyAttack : AttackType.NoAttack;
+            attackType = Input.GetKeyDown(KeyCode.K) ? AttackType.HeavyAttack : AttackType.NoAttack;
         if (attackType == AttackType.NoAttack)
-            attackType = Input.GetKeyDown(KeyCode.D) ? AttackType.SpecialAttack : AttackType.NoAttack;
+            attackType = Input.GetKeyDown(KeyCode.L) ? AttackType.SpecialAttack : AttackType.NoAttack;
 
         if (isAttacking)
+        {
             timeLeft -= Time.deltaTime;
-        
-        if (timeLeft < 0) 
+            //delayBar.fillAmount -=  Time.deltaTime;
+        }
+
+        if (timeLeft < 0)
+        {
             isAttacking = false;
-        
-        if (attackType != AttackType.NoAttack && !isAttacking)
+            //delayBar.enabled = false;
+            //delayBarBG.enabled = false;
+        }
+    
+
+    if (attackType != AttackType.NoAttack && !isAttacking)
         {
             isAttacking = true;
-            
-            
-            
+            //delayBar.enabled = true;
+            //delayBarBG.enabled = true;
             var triggerAttack = "";
             var attackDmg = 0;
             switch (attackType)
             {
                 case AttackType.NormalAttack:
-                    timeLeft = 1f;
+                    timeLeft = 0.8f;
                     triggerAttack = "normal";
                     audio.PlayOneShot(audio.clip);
                     attackDmg = 5;
@@ -133,7 +146,7 @@ public class PlayerController : MonoBehaviour
                     manaBar.fillAmount -= manaCost;
                     break;
             }
-
+            //delayBar.fillAmount = timeLeft;
             if (triggerAttack == "")
                 return;
             animator.SetTrigger(triggerAttack);
@@ -156,7 +169,6 @@ public class PlayerController : MonoBehaviour
 
     public void TakeDamage(int damage)
     {
-        //TODO:переписать эту тупость :)
         StartCoroutine(Damage(damage));
     }
     

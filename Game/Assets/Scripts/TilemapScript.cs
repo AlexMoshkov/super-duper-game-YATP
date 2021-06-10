@@ -26,6 +26,8 @@ public class TilemapScript : MonoBehaviour
         map.playerPosition = map.GetPositionInTilemap(tilemap, player.transform.position);
         foreach (var enemy in GameObject.FindGameObjectsWithTag("Enemy"))
         {
+            if (enemy.GetComponent<MonsterController>().currentHealth <= 0)
+                continue;
             var pos = map.GetPositionInTilemap(tilemap, enemy.transform.position);
             map.map[pos.x, pos.y] = CellType.Occupied;
         }

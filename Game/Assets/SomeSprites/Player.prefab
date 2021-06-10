@@ -96,10 +96,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   renderer: {fileID: 394316911}
-  arrows: {fileID: 21300000, guid: 4aba29bbef1f6fc409f51f9cda771bff, type: 3}
-  buttonA: {fileID: 21300000, guid: aad1d20fdf2379143b711c6b4f98b06c, type: 3}
-  buttonS: {fileID: 21300000, guid: f47317a606eefbc4a92a2242be7f0add, type: 3}
-  buttonD: {fileID: 21300000, guid: 3cae3e1442a724345a6356230d8bf78f, type: 3}
+  arrows: {fileID: 21300000, guid: 3c84929b78a7c5c47953443044ae271e, type: 3}
+  buttonA: {fileID: 21300000, guid: 85081b3ef3c10fd43999dd95b8a28fe1, type: 3}
+  buttonS: {fileID: 21300000, guid: 070090777d8b7b945aa35582742340d5, type: 3}
+  buttonD: {fileID: 21300000, guid: c786b432db3f57d4a8a5ebd8ef90474b, type: 3}
 --- !u!1 &7031594918740928805
 GameObject:
   m_ObjectHideFlags: 0
